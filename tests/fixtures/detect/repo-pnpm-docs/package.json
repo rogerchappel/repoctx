@@ -1,0 +1,10 @@
+{
+  "name": "repo-pnpm-docs",
+  "scripts": {
+    "test": "vitest run",
+    "build": "astro build",
+    "typecheck": "astro check",
+    "lint": "eslint .",
+    "dev": "astro dev"
+  }
+}
