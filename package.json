@@ -1,0 +1,39 @@
+{
+  "name": "repoctx",
+  "version": "0.1.0",
+  "description": "Repository context tooling for agentic development workflows.",
+  "type": "module",
+  "bin": {
+    "repoctx": "./dist/cli.js"
+  },
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit"
+  },
+  "keywords": [
+    "repoctx",
+    "repository",
+    "context",
+    "agents"
+  ],
+  "author": "Roger Chappel",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/node": "^20.12.12",
+    "tsup": "^8.0.2",
+    "typescript": "^5.4.5",
+    "vitest": "^1.6.0"
+  }
+}
