@@ -38,10 +38,10 @@ describe("repoctx help", () => {
     }
   });
 
-  it("prints help successfully", () => {
+  it("prints help successfully", async () => {
     const { io, output } = createIo();
 
-    const exitCode = runCli(["--help"], io);
+    const exitCode = await runCli(["--help"], io);
 
     expect(exitCode).toBe(0);
     expect(output().stdout).toContain("repoctx <command>");
