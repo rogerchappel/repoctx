@@ -22,18 +22,6 @@ import {
   type WorkspaceFormat,
 } from "./workspace/writeWorkspace";
 
-type CommandName =
-  | "init"
-  | "scan"
-  | "add"
-  | "inspect"
-  | "validate"
-  | "export"
-  | "doctor"
-  | "list"
-  | "remove"
-  | "update";
-
 export interface CliCommand {
   readonly name: CommandName;
   readonly summary: string;
@@ -45,6 +33,18 @@ export interface CliIO {
   readonly stderr: Pick<NodeJS.WriteStream, "write">;
   readonly cwdPath?: string;
 }
+
+type CommandName =
+  | "init"
+  | "scan"
+  | "add"
+  | "inspect"
+  | "validate"
+  | "export"
+  | "doctor"
+  | "list"
+  | "remove"
+  | "update";
 
 export const COMMANDS: readonly CliCommand[] = [
   { name: "init", summary: "Create a workspace file.", status: "ready" },
