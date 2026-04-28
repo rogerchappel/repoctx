@@ -1,9 +1,25 @@
-import { mkdir, mkdtemp, writeFile } from "node:fs/promises";
+import { mkdir, mkdtemp, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { describe, expect, it } from "vitest";
+import { afterEach, describe, expect, it } from "vitest";
 
 import { validateWorkspace } from "../../src/workspace/validateWorkspace";
+
+const tempPaths: string[] = [];
+
+async function createRepoFixture(packageJson: unknown): Promise<string> {
+  const repoPath = await mkdtemp(join(tmpdir(), "repoctx-"));
+  tempPaths.push(repoPath);
+  await mkdir(join(repoPath, ".git"));
+  await writeFile(join(repoPath, "package.json"), JSON.stringify(packageJson));
+  return repoPath;
+}
+
+afterEach(async () => {
+  await Promise.all(
+    tempPaths.splice(0).map((path) => rm(path, { recursive: true, force: true })),
+  );
+});
 
 describe("validateWorkspace", () => {
   it("reports missing paths as errors", async () => {
@@ -20,12 +36,7 @@ describe("validateWorkspace", () => {
   });
 
   it("warns on missing metadata and production-sensitive policy gaps", async () => {
-    const repoPath = await mkdtemp(join(tmpdir(), "repoctx-"));
-    await mkdir(join(repoPath, ".git"));
-    await writeFile(
-      join(repoPath, "package.json"),
-      JSON.stringify({ scripts: { build: "tsc" } }),
-    );
+    const repoPath = await createRepoFixture({ scripts: { build: "tsc" } });
 
     const result = await validateWorkspace({
       repos: {
@@ -68,5 +79,45 @@ describe("validateWorkspace", () => {
         issue.message.includes("missing package script: missing"),
       ),
     ).toBe(true);
+  });
+
+  it("validates package commands against declared package scripts", async () => {
+    const repoPath = await createRepoFixture({
+      scripts: {
+        build: "tsc",
+        test: "vitest run",
+      },
+    });
+
+    const result = await validateWorkspace({
+      repos: {
+        library: {
+          path: repoPath,
+          commands: {
+            build: "npm run build",
+            test: "npm test",
+            install: "npm ci",
+            lint: "pnpm run lint",
+          },
+        },
+      },
+    });
+
+    expect(result.valid).toBe(true);
+    expect(
+      result.issues.some((issue) =>
+        issue.message.includes("missing package script: lint"),
+      ),
+    ).toBe(true);
+    expect(
+      result.issues.some((issue) =>
+        issue.message.includes("missing package script: test"),
+      ),
+    ).toBe(false);
+    expect(
+      result.issues.some((issue) =>
+        issue.message.includes("missing package script: ci"),
+      ),
+    ).toBe(false);
   });
 });

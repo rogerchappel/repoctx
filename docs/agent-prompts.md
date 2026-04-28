@@ -1,26 +1,24 @@
 # Agent Prompts
 
-This document provides reusable prompts for common open-source maintenance work
-in repositories generated from this template.
+This document provides reusable prompts for common repoctx maintenance work.
 
-Use these prompts as starting points. Replace bracketed notes with the generated
-repository's actual task, files, verification commands, and risk context before
-handing work to an agent.
+Use these prompts as starting points. Replace bracketed notes with the actual
+task, files, verification commands, and risk context before handing work to an
+agent.
 
-## Customise A New Repository
+## Align Documentation
 
 ```md
-You are working in [REPOSITORY_NAME], a repository generated from
-agentic-oss-template.
+You are working in repoctx.
 
-Task: Complete the first repository customisation pass.
+Task: Align documentation for [TOPIC] with the current implemented package and
+planned V1 behavior.
 
 Scope:
-- Replace template identity in README, LICENSE, package metadata, security
-  policy, contributor docs, and agent instructions.
-- Remove optional template files that this repository will not use.
-- Keep source code, dependencies, generated files, and CI behavior unchanged
-  unless required for accurate project identity.
+- Keep docs accurate to current behavior.
+- Phrase planned CLI behavior as planned until command wiring exists.
+- Update examples only when the workspace schema or documented usage changes.
+- Do not touch source, tests, package metadata, or CI unless explicitly asked.
 
 Before editing, report:
 - task objective
@@ -31,10 +29,8 @@ Before editing, report:
 - risk level
 
 Verification:
-- Run `rg '\{\{[A-Z0-9_]+\}\}'` and explain any intentional remaining
-  placeholders.
-- Run `rg 'agentic-oss-template|template repository|starter|placeholder|TODO'`
-  and remove stale template language that no longer applies.
+- Run `bash scripts/validate-repoctx.sh`.
+- Run a stale-language scan for source-scaffold identity in project-facing docs.
 - Run the smallest repository-specific check available.
 
 Return a review pack with summary, verification, risk, rollback plan, and any
@@ -44,7 +40,7 @@ human decisions needed.
 ## Add A Feature
 
 ```md
-You are working in [REPOSITORY_NAME].
+You are working in repoctx.
 
 Task: Add [FEATURE] for [USER_OR_MAINTAINER_OUTCOME].
 
@@ -71,7 +67,7 @@ Return a review pack.
 ## Fix A Bug
 
 ```md
-You are working in [REPOSITORY_NAME].
+You are working in repoctx.
 
 Task: Fix [BUG] where [OBSERVED_BEHAVIOR] should instead [EXPECTED_BEHAVIOR].
 
@@ -98,7 +94,7 @@ Return a review pack that includes the root cause if known.
 ## Improve Documentation
 
 ```md
-You are working in [REPOSITORY_NAME].
+You are working in repoctx.
 
 Task: Improve documentation for [TOPIC].
 
@@ -125,7 +121,7 @@ Return a review pack.
 ## Prepare A Release
 
 ```md
-You are working in [REPOSITORY_NAME].
+You are working in repoctx.
 
 Task: Prepare release [VERSION].
 
@@ -153,7 +149,7 @@ Return a review pack with remaining human release decisions.
 ## Review A Pull Request
 
 ```md
-You are reviewing pull request [PR_NUMBER_OR_URL] in [REPOSITORY_NAME].
+You are reviewing pull request [PR_NUMBER_OR_URL] in repoctx.
 
 Task: Perform a code-review style assessment.
 

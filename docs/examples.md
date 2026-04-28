@@ -8,8 +8,6 @@ The `examples/` directory contains safe, placeholder workspace files. They are e
 - `examples/workspace.json`: JSON version for tools that prefer machine-readable input.
 - `examples/rogerchappel-workspace.yaml`: larger example with the repos named in the PRD.
 
-Older template example directories may still exist while the repository transitions away from its source template. Prefer the repoctx workspace files above for new docs and integration work.
-
 ## Placeholder paths
 
 Example paths use forms such as:

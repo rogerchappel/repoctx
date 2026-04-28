@@ -1,11 +1,12 @@
-import { findGitRepos } from "./findGitRepos";
 import { basename, resolve } from "node:path";
+
 import type { RepoType, WorkspaceRepo } from "../types";
 import { getCurrentBranch } from "../git/getCurrentBranch";
 import { getDefaultBranch } from "../git/getDefaultBranch";
 import { getRemote } from "../git/getRemote";
 import { getStatus, type GitStatus } from "../git/getStatus";
 import { detectRepoMetadata, type RepoMetadata } from "./detectRepoMetadata";
+import { findGitRepos } from "./findGitRepos";
 
 export interface ScannedRepo {
   name: string;
