@@ -94,7 +94,7 @@ describe("repoctx scan", () => {
 
       expect(exitCode).toBe(0);
       expect(output().stderr).toBe("");
-      expect(output().stdout).toContain("Scanned 1 repos");
+      expect(output().stdout).toContain("Scanned 1 repo(s)");
 
       const workspace = parseWorkspaceJson(await readFile(workspaceFile, "utf8"));
       expect(workspace.repos.repo).toMatchObject({

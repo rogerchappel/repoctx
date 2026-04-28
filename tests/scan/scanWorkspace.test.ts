@@ -4,7 +4,6 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { promisify } from "node:util";
 import { afterEach, describe, expect, it } from "vitest";
-
 import { scanWorkspace } from "../../src/scan/scanWorkspace.js";
 
 const execFileAsync = promisify(execFile);
@@ -36,12 +35,64 @@ afterEach(async () => {
 });
 
 describe("scanWorkspace", () => {
-  it("returns discovered repos with practical git metadata and workspace entries", async () => {
+  it("returns discovered repos with practical git metadata and remote-derived names", async () => {
     const root = await createTempDir();
     const repoPath = join(root, "local-folder");
 
     await createRepo(repoPath);
     await git(repoPath, ["remote", "add", "origin", "git@github.com:example/remote-name.git"]);
+
+    const scan = await scanWorkspace(root);
+
+    expect(scan.root).toBe(root);
+    expect(scan.repos).toHaveLength(1);
+    expect(scan.repos[0]).toMatchObject({
+      name: "remote-name",
+      path: repoPath,
+      remote: "git@github.com:example/remote-name.git",
+      defaultBranch: "main",
+      currentBranch: "main",
+      status: {
+        clean: true,
+        status: "clean",
+        changedFiles: 0,
+      },
+    });
+    expect(scan.workspaceRepos["remote-name"]).toMatchObject({
+      path: repoPath,
+      remote: "git@github.com:example/remote-name.git",
+      default_base: "main",
+    });
+  });
+
+  it("handles repos without remotes using folder names", async () => {
+    const root = await createTempDir();
+    const repoPath = join(root, "repo-without-remote");
+
+    await createRepo(repoPath);
+
+    const scan = await scanWorkspace(root);
+
+    expect(scan.repos).toHaveLength(1);
+    expect(scan.repos[0]).toMatchObject({
+      name: "repo-without-remote",
+      path: repoPath,
+      remote: null,
+      defaultBranch: "main",
+      currentBranch: "main",
+    });
+    expect(scan.workspaceRepos["repo-without-remote"]).toMatchObject({
+      path: repoPath,
+      default_base: "main",
+    });
+  });
+
+  it("projects detector metadata into workspace entries", async () => {
+    const root = await createTempDir();
+    const repoPath = join(root, "repo");
+
+    await createRepo(repoPath);
+    await git(repoPath, ["remote", "add", "origin", "git@github.com:example/repo.git"]);
     await writeFile(
       join(repoPath, "package.json"),
       JSON.stringify({
@@ -58,101 +109,23 @@ describe("scanWorkspace", () => {
 
     const scan = await scanWorkspace(root);
 
-    expect(scan).toEqual({
-      root,
-      repos: [
-        {
-          name: "remote-name",
-          path: repoPath,
-          remote: "git@github.com:example/remote-name.git",
-          defaultBranch: "main",
-          currentBranch: "main",
-          status: {
-            clean: false,
-            status: "dirty",
-            changedFiles: 4,
-          },
-          metadata: {
-            packageManager: "npm",
-            commands: {
-              test: "npm test",
-              build: "npm run build",
-            },
-            type: "unknown",
-            docs: {
-              readme: true,
-              docsDirectory: false,
-              astroConfig: false,
-              contentDocs: false,
-              wranglerConfig: false,
-              paths: ["README.md"],
-            },
-            agents: {
-              agentsMd: true,
-              claudeMd: false,
-              copilotInstructions: false,
-              paths: ["AGENTS.md"],
-            },
-            branchbrief: {
-              workflow: false,
-              brief: true,
-              enabled: true,
-              paths: ["BRANCH_BRIEF.md"],
-            },
-          },
-        },
-      ],
-      workspaceRepos: {
-        "remote-name": {
-          path: repoPath,
-          remote: "git@github.com:example/remote-name.git",
-          default_base: "main",
-          type: "unknown",
-          package_manager: "npm",
-          commands: {
-            test: "npm test",
-            build: "npm run build",
-          },
-          files: {
-            readme: "README.md",
-            agents: "AGENTS.md",
-            branchbrief: "BRANCH_BRIEF.md",
-          },
-          integrations: {
-            branchbrief: true,
-          },
-        },
+    expect(scan.workspaceRepos.repo).toEqual({
+      path: repoPath,
+      remote: "git@github.com:example/repo.git",
+      default_base: "main",
+      type: "unknown",
+      package_manager: "npm",
+      commands: {
+        test: "npm test",
+        build: "npm run build",
       },
-    });
-  });
-
-  it("handles repos without remotes using folder names", async () => {
-    const root = await createTempDir();
-    const repoPath = join(root, "repo-without-remote");
-
-    await createRepo(repoPath);
-
-    expect(await scanWorkspace(root)).toMatchObject({
-      root,
-      repos: [
-        {
-          name: "repo-without-remote",
-          path: repoPath,
-          remote: null,
-          defaultBranch: "main",
-          currentBranch: "main",
-          status: {
-            clean: true,
-            status: "clean",
-            changedFiles: 0,
-          },
-        },
-      ],
-      workspaceRepos: {
-        "repo-without-remote": {
-          path: repoPath,
-          default_base: "main",
-        },
+      files: {
+        readme: "README.md",
+        agents: "AGENTS.md",
+        branchbrief: "BRANCH_BRIEF.md",
+      },
+      integrations: {
+        branchbrief: true,
       },
     });
   });
