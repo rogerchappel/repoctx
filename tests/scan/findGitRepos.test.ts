@@ -2,8 +2,8 @@ import assert from "node:assert/strict";
 import { mkdtemp, mkdir, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import test from "node:test";
-import { findGitRepos } from "../../src/scan/findGitRepos.ts";
+import { test } from "vitest";
+import { findGitRepos } from "../../src/scan/findGitRepos.js";
 
 test("findGitRepos discovers .git directories and files", async () => {
   const root = await mkdtemp(join(tmpdir(), "repoctx-scan-"));
