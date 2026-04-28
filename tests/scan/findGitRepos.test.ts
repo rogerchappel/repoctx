@@ -2,6 +2,7 @@ import { mkdir, mkdtemp, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { afterEach, describe, expect, it } from "vitest";
+
 import { findGitRepos } from "../../src/scan/findGitRepos.js";
 
 const tempPaths: string[] = [];
