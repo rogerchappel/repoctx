@@ -1,0 +1,160 @@
+# Example repoctx workspace based on the PRD.
+# Placeholder paths only; do not treat this as a private machine inventory.
+version: "0.1"
+workspace: rogerchappel-example
+defaults:
+  default_base: main
+  requires_branch: true
+  requires_pr: true
+  review_pack_required: true
+  forbidden_by_default:
+    - .env*
+    - secrets/**
+    - credentials/**
+repos:
+  branchbrief:
+    path: ~/Developer/example/branchbrief
+    remote: https://github.com/rogerchappel/branchbrief.git
+    type: oss-cli
+    default_base: main
+    package_manager: npm
+    commands:
+      install: npm ci
+      test: npm test
+      build: npm run build
+      typecheck: npm run typecheck
+    integrations:
+      branchbrief: true
+      taskbrief: true
+      crewcmd: true
+      copilot: true
+    risk:
+      production_sensitive: false
+      forbidden_by_default:
+        - .env*
+        - secrets/**
+    agents:
+      requires_branch: true
+      requires_pr: true
+      review_pack_required: true
+  taskbrief:
+    path: ~/Developer/example/taskbrief
+    remote: https://github.com/rogerchappel/taskbrief.git
+    type: oss-cli
+    default_base: main
+    package_manager: npm
+    commands:
+      install: npm ci
+      test: npm test
+      build: npm run build
+      typecheck: npm run typecheck
+    integrations:
+      branchbrief: true
+      taskbrief: true
+      crewcmd: true
+      copilot: true
+    risk:
+      production_sensitive: false
+      forbidden_by_default:
+        - .env*
+        - secrets/**
+    agents:
+      requires_branch: true
+      requires_pr: true
+      review_pack_required: true
+  agentic-team-playbook:
+    path: ~/Developer/example/agentic-team-playbook
+    remote: https://github.com/rogerchappel/agentic-team-playbook.git
+    type: docs-site
+    default_base: main
+    commands:
+      docs: npm run docs
+    integrations:
+      branchbrief: true
+      taskbrief: true
+      crewcmd: false
+      copilot: true
+    risk:
+      production_sensitive: false
+      forbidden_by_default:
+        - .env*
+        - secrets/**
+    agents:
+      requires_branch: true
+      requires_pr: true
+      review_pack_required: true
+  agentic-oss-template:
+    path: ~/Developer/example/agentic-oss-template
+    remote: https://github.com/rogerchappel/agentic-oss-template.git
+    type: template
+    default_base: main
+    commands:
+      release_check: bash scripts/validate-template.sh
+    integrations:
+      branchbrief: true
+      taskbrief: true
+      crewcmd: false
+      copilot: true
+    risk:
+      production_sensitive: false
+      medium_risk_paths:
+        - .github/workflows/**
+        - templates/**
+    agents:
+      requires_branch: true
+      requires_pr: true
+      review_pack_required: true
+  crewcmd:
+    path: ~/Developer/example/crewcmd
+    remote: https://github.com/rogerchappel/crewcmd.git
+    type: oss-cli
+    default_base: main
+    package_manager: npm
+    commands:
+      install: npm ci
+      test: npm test
+      build: npm run build
+      typecheck: npm run typecheck
+    integrations:
+      branchbrief: true
+      taskbrief: true
+      crewcmd: true
+      copilot: true
+    risk:
+      production_sensitive: false
+      forbidden_by_default:
+        - .env*
+        - secrets/**
+    agents:
+      requires_branch: true
+      requires_pr: true
+      review_pack_required: true
+  product-videogen:
+    path: ~/Developer/example/product-videogen
+    remote: git@github.com:example/product-videogen.git
+    type: product
+    default_base: main
+    package_manager: npm
+    commands:
+      install: npm ci
+      test: npm test
+      build: npm run build
+    integrations:
+      branchbrief: true
+      taskbrief: true
+      crewcmd: true
+      copilot: true
+    risk:
+      production_sensitive: true
+      forbidden_by_default:
+        - .env*
+        - secrets/**
+      high_risk_paths:
+        - auth/**
+        - billing/**
+        - production/**
+    agents:
+      requires_branch: true
+      requires_pr: true
+      review_pack_required: true
+      human_approval_required: true

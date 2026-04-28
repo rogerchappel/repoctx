@@ -1,0 +1,79 @@
+{
+  "version": "0.1",
+  "workspace": "example-workspace",
+  "example_notice": "Placeholder paths only; replace with real local paths in your private workspace file.",
+  "defaults": {
+    "default_base": "main",
+    "requires_branch": true,
+    "review_pack_required": true,
+    "forbidden_by_default": [".env*", "secrets/**", "credentials/**"]
+  },
+  "repos": {
+    "branchbrief": {
+      "path": "~/Developer/example/branchbrief",
+      "remote": "https://github.com/example/branchbrief.git",
+      "type": "oss-cli",
+      "default_base": "main",
+      "docs_url": "https://example.com/branchbrief",
+      "package_manager": "npm",
+      "commands": {
+        "install": "npm ci",
+        "test": "npm test",
+        "build": "npm run build",
+        "typecheck": "npm run typecheck"
+      },
+      "files": {
+        "agents": "AGENTS.md",
+        "changelog": "CHANGELOG.md",
+        "roadmap": "ROADMAP.md"
+      },
+      "integrations": {
+        "branchbrief": true,
+        "taskbrief": true,
+        "crewcmd": false,
+        "copilot": true
+      },
+      "risk": {
+        "production_sensitive": false,
+        "forbidden_by_default": [".env*", "secrets/**"]
+      },
+      "agents": {
+        "requires_branch": true,
+        "requires_pr": true,
+        "review_pack_required": true,
+        "human_approval_required": false
+      },
+      "tags": ["agentic", "oss"]
+    },
+    "product-videogen": {
+      "path": "~/Developer/example/product-videogen",
+      "remote": "git@github.com:example/product-videogen.git",
+      "type": "product",
+      "default_base": "main",
+      "package_manager": "npm",
+      "commands": {
+        "install": "npm ci",
+        "test": "npm test",
+        "build": "npm run build"
+      },
+      "integrations": {
+        "branchbrief": true,
+        "taskbrief": true,
+        "crewcmd": true,
+        "copilot": true
+      },
+      "risk": {
+        "production_sensitive": true,
+        "forbidden_by_default": [".env*", "secrets/**"],
+        "high_risk_paths": ["auth/**", "billing/**", "production/**"]
+      },
+      "agents": {
+        "requires_branch": true,
+        "requires_pr": true,
+        "review_pack_required": true,
+        "human_approval_required": true
+      },
+      "tags": ["product", "example"]
+    }
+  }
+}
