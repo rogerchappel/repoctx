@@ -24,10 +24,11 @@ export function detectCommands(
     return {};
   }
 
+  const scriptsByName = scripts as Record<string, unknown>;
   const commands: DetectedCommands = {};
 
   for (const scriptName of COMMON_SCRIPTS) {
-    if (typeof scripts[scriptName] === "string") {
+    if (typeof scriptsByName[scriptName] === "string") {
       commands[scriptName] = scriptCommand(scriptName, packageManager);
     }
   }
