@@ -1,0 +1,6 @@
+{
+  "name": "repo-yarn-cli",
+  "bin": {
+    "repo-yarn-cli": "bin/cli.js"
+  }
+}

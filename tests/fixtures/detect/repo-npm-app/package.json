@@ -1,0 +1,7 @@
+{
+  "name": "repo-npm-app",
+  "scripts": {
+    "test": "node --test",
+    "build": "next build"
+  }
+}
