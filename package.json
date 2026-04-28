@@ -30,6 +30,9 @@
   ],
   "author": "Roger Chappel",
   "license": "MIT",
+  "dependencies": {
+    "yaml": "^2.8.3"
+  },
   "devDependencies": {
     "@types/node": "^25.6.0",
     "tsup": "^8.0.2",
