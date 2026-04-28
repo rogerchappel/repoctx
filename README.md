@@ -1,159 +1,172 @@
-# agentic-oss-template
+# repoctx
 
-`agentic-oss-template` is a GitHub repository template for starting an
-open-source project with clear maintainer policy, agent-friendly workflow rules,
-baseline GitHub automation, and practical release and security documentation.
+Give agents a map of your repos, commands, policies, and risks.
 
-It is not an application framework or runtime starter. Use it when the first
-thing a new repository needs is trustworthy project structure: reviewable
-contribution flow, documented agent expectations, lightweight CI, issue and pull
-request templates, dependency update policy, and release discipline.
+`repoctx` scans your local development workspace and creates a machine-readable repo context file for agentic development workflows. It helps tools like taskbrief, branchbrief, CrewCMD, Codex, OpenClaw, Claude Code, and Copilot understand where repos live, how to verify them, and what is safe to touch.
 
-## Who this is for
+It does not dispatch agents or run commands across repos. It gives your agents context before they act.
 
-This template is intended for maintainers who want a new repository to begin
-with working collaboration norms instead of adding them later.
+## Why repoctx exists
 
-It is a good fit for:
+Multi-repo tools usually answer: what repositories do I have, and can I run a command across them?
 
-- open-source libraries, tools, CLIs, and documentation projects
-- agent-assisted projects where humans and coding agents will both contribute
-- early-stage repositories that need policy, review, and release scaffolding
-- maintainers who want small, auditable commits and clear review handoffs
+`repoctx` answers a different question: what does an agent need to know before working in this repo?
 
-It is not a complete product scaffold. It does not include application source
-code, a configured package manager at the root, deployment credentials, or a
-project-specific security contact. Generated repositories should customize the
-template before publishing.
+That context includes local paths, GitHub remotes, project type, package manager, useful verification commands, documentation files, agent instructions, branch policy, production sensitivity, forbidden paths, and integration flags.
 
-## What's included
+## Current status
 
-### Repository policy
+This repository is being built toward the V1 described in [docs/PRD.md](docs/PRD.md). The docs and examples in this branch describe the intended workspace format and CLI behavior. Runtime commands should be treated as planned unless the implementation is present on the branch you are using.
 
-- `AGENTS.md`: operating instructions for AI agents and human maintainers.
-- `CONTRIBUTING.md`: contribution expectations for generated repositories.
-- `CODE_OF_CONDUCT.md`: baseline community conduct policy.
-- `SECURITY.md`: generic vulnerability reporting policy to customize.
-- `LICENSE`: MIT license text for the template.
-- `CHANGELOG.md`: changelog structure for release notes.
-- `ROADMAP.md`: lightweight roadmap structure.
-- `.editorconfig`: shared editor formatting defaults.
-- `.gitignore`: common ignores for editors, operating systems, dependencies,
-  build output, and local environment files.
+## Quickstart
 
-### GitHub project files
+Target V1 flow:
 
-- `.github/pull_request_template.md`: pull request review checklist and handoff
-  structure.
-- `.github/ISSUE_TEMPLATE/agent_task.md`: issue template for agent-executable
-  tasks.
-- `.github/ISSUE_TEMPLATE/bug_report.md`: bug report template.
-- `.github/ISSUE_TEMPLATE/feature_request.md`: feature request template.
-- `.github/dependabot.yml`: weekly GitHub Actions dependency updates.
-- `.github/workflows/ci.yml`: baseline repository checks for this template.
-- `.github/workflows/docs.yml`: documentation presence checks.
-- `.github/workflows/branchbrief.yml`: pull request branch summary artifact.
-- `scripts/validate-template.sh`: local repository hygiene validation for this
-  template.
+```sh
+repoctx init
+repoctx scan ~/Developer/my-opensource --output workspace.yaml
+repoctx validate
+repoctx inspect branchbrief
+repoctx export --format json --output workspace.json
+```
 
-### Documentation
+Until the CLI is implemented, use the examples in `examples/` as reference workspace files for contributors, agents, and integration prototypes.
 
-- [Repository customisation](docs/repo-customisation.md): first-pass setup after
-  generating a new repository.
-- [Agent workflow](docs/agent-workflow.md): branch, verification, commit, and
-  review pack expectations.
-- [Agent prompts](docs/agent-prompts.md): reusable prompts for common
-  agent-assisted OSS maintenance tasks.
-- [GitHub Actions](docs/github-actions.md): included workflows and how to extend
-  them.
-- [Dependency policy](docs/dependency-policy.md): baseline Dependabot policy and
-  later npm update guidance.
-- [Release process](docs/release-process.md): lightweight versioning, changelog,
-  release notes, publishing, and rollback guidance.
-- [Security policy customisation](docs/security-policy.md): how to adapt
-  vulnerability reporting for the generated repository.
+## CLI usage
 
-Additional docs cover branchbrief, Cloudflare Pages, npm publishing, Copilot,
-LLM usage policy, release checklists, template variables, and the project PRD.
+Planned primary commands:
 
-### Examples
+```text
+repoctx init
+repoctx scan <path>
+repoctx scan <path> --output workspace.yaml
+repoctx add <name> --path <path>
+repoctx inspect <name>
+repoctx validate
+repoctx export --format yaml
+repoctx export --format json
+repoctx doctor
+```
 
-The `examples/` directory contains small documentation-first examples of how
-generated repositories can look after customization:
+Planned nice-to-have V1 commands:
 
-- [Minimal library repository](examples/minimal-library/README.md)
-- [CLI and tooling repository](examples/cli-tooling/README.md)
-- [Docs-only repository](examples/docs-only/README.md)
+```text
+repoctx list
+repoctx list --type oss-cli
+repoctx list --tag agentic
+repoctx remove <name>
+repoctx update <name>
+```
 
-### Reusable templates
+## Example workspace
 
-The `templates/` directory contains copyable or reference files for generated
-repositories, including:
+`workspace.yaml` is the preferred V1 workspace file name. Minimal repo entries only require a path:
 
-- agent instruction templates
-- contributor and review pack templates
-- GitHub issue, pull request, workflow, and Dependabot templates
-- release, changelog, roadmap, and release-checklist templates
-- generated repository README template
-- security policy templates
-- MIT license template
-- optional Cloudflare Pages documentation deployment files
-- optional npm package starter files
-- optional Astro/Starlight docs-site starter files
+```yaml
+version: "0.1"
+workspace: example-workspace
+repos:
+  branchbrief:
+    path: ~/Developer/my-opensource/branchbrief
+```
 
-## Use this template
+A fuller entry can include detected metadata, commands, policies, and integration hints:
 
-1. Open this repository on GitHub.
-2. Select **Use this template**.
-3. Create a new repository from the template.
-4. Clone the generated repository locally.
-5. Create a branch for the first customisation pass.
-6. Replace the template identity with the generated repository's name, description,
-   owner, license choice, maintainer guidance, and security reporting path.
-7. Remove files and template assets that the generated repository will not use.
-8. Run the checks listed in the first-30-minute checklist below.
-9. Commit the identity and policy changes before adding application, package, or
-   product code.
+```yaml
+version: "0.1"
+workspace: example-workspace
+defaults:
+  default_base: main
+  requires_branch: true
+  review_pack_required: true
+  forbidden_by_default:
+    - .env*
+    - secrets/**
+    - credentials/**
+repos:
+  branchbrief:
+    path: ~/Developer/my-opensource/branchbrief
+    remote: https://github.com/example/branchbrief.git
+    type: oss-cli
+    default_base: main
+    docs_url: https://example.com/branchbrief
+    package_manager: npm
+    commands:
+      install: npm ci
+      test: npm test
+      build: npm run build
+      typecheck: npm run typecheck
+    files:
+      agents: AGENTS.md
+      changelog: CHANGELOG.md
+      roadmap: ROADMAP.md
+    integrations:
+      branchbrief: true
+      taskbrief: true
+      crewcmd: false
+      copilot: true
+    risk:
+      production_sensitive: false
+      forbidden_by_default:
+        - .env*
+        - secrets/**
+    agents:
+      requires_branch: true
+      requires_pr: true
+      review_pack_required: true
+      human_approval_required: false
+```
 
-## First 30 minutes after generation
+See [docs/workspace-schema.md](docs/workspace-schema.md) and [docs/examples.md](docs/examples.md) for field guidance.
 
-Use this checklist before inviting contributors or agents into the generated
-repository:
+## Integrations
 
-- Update `README.md` so it describes the generated repository, not this template.
-- Review `LICENSE` and set the correct license text and copyright owner.
-- Review `AGENTS.md` and keep only instructions that match the generated repository.
-- Review `CONTRIBUTING.md`, `CODE_OF_CONDUCT.md`, and `SECURITY.md` for accuracy.
-- Confirm the security reporting path exists and is monitored.
-- Review `.github/pull_request_template.md` and `.github/ISSUE_TEMPLATE/*.md`.
-- Remove unused files from `templates/`.
-- Search for unresolved template markers and resolve every marker that should
-  not ship in the generated repository.
-- Search for stale template language and remove anything that no longer applies
-  to the generated repository.
-- Run `bash scripts/validate-template.sh` while maintaining this template.
-- Run the smallest relevant local verification for the generated repository.
-- Make the first commit as a small identity-only change.
+`repoctx` is intended to be a shared context layer:
 
-For the full setup sequence, see
-[Repository customisation](docs/repo-customisation.md).
+- taskbrief can use a workspace file to map messy task input to the right repo, risk profile, and verification commands.
+- branchbrief can use repo context to improve pull request summaries, risk classification, and suggested reviewer checks.
+- CrewCMD can use repo context to dispatch work with the right branch policy, worktree path, and verification expectations.
+- Codex, OpenClaw, Claude Code, Copilot, and other agents can read the map before deciding what to inspect or touch.
 
-## Operating model
+Example planned integration commands:
 
-The repository is designed around small, reviewable, reversible changes:
+```sh
+taskbrief parse brain-dump.txt --workspace workspace.yaml
+branchbrief --workspace workspace.yaml
+crewcmd dispatch queue.yaml --workspace workspace.yaml
+```
 
-- branch before editing
-- keep one commit to one reviewable intent
-- run the smallest meaningful verification
-- stage only related files
-- use Conventional Commits
-- return a review pack with summary, verification, risk, and rollback notes
+These commands belong to their respective tools; `repoctx` provides the workspace context file.
 
-These expectations are documented in
-[Agent workflow](docs/agent-workflow.md) and mirrored in `AGENTS.md`.
+## Safety policy
+
+V1 is local-first by default:
+
+- no external API calls required
+- no GitHub authentication required
+- no LLM required
+- no repository mutation during scanning
+- no edits inside scanned repositories
+- no secret contents read from `.env` files
+- no secret values printed
+- workspace output written only when requested
+
+`repoctx` may record that sensitive files or paths exist, but it should not read or expose their contents. Production-sensitive repositories should declare forbidden and high-risk paths so agents know when to stop for human approval.
+
+## Roadmap summary
+
+V1 focuses on local scanning, workspace config, metadata detection, validation, inspection, YAML/JSON export, docs, and examples.
+
+V2 may add richer GitHub enrichment, integration-specific outputs, importers, policy packs, repo health signals, and interactive editing.
+
+V3 may add org-level maps, dependency graphs, static dashboards, agent dispatch integration, policy-as-code, and multi-machine sync.
+
+See [ROADMAP.md](ROADMAP.md) for the working roadmap.
+
+## Contributing
+
+Keep changes small, reviewable, and aligned with [AGENTS.md](AGENTS.md). Runtime work should not overclaim behavior in docs until commands are implemented and verified.
 
 ## License
 
-This template is released under the MIT License. Repositories generated from it
-should choose and document the license that fits their own repository before
-publishing.
+MIT. See [LICENSE](LICENSE).
