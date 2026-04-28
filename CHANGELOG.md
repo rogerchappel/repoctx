@@ -9,31 +9,29 @@ format and uses semantic versioning when versioned releases are published.
 
 ### Added
 
-- Initial release planning, roadmap, and release-process documentation.
-- Template validation script and documentation for local repository hygiene
-  checks.
-- Example generated repository shapes for minimal libraries, CLI tooling, and
-  docs-only projects.
-- Optional generated repository README template.
-- Reusable agent prompt library for common OSS maintenance tasks.
+- Initial repoctx PRD, roadmap, release-process documentation, workspace schema,
+  scanning, validation, risk policy, and integration docs.
+- Placeholder CLI surface for the planned V1 commands.
+- Repoctx workspace examples in YAML and JSON, including a larger
+  Roger Chappel example with placeholder paths only.
+- Local repoctx documentation validation script.
+- Reusable agent prompt library for repoctx maintenance tasks.
 
 ### Changed
 
-- Aligned template terminology, placeholder documentation, and current V1
-  surface area across docs, templates, and workflows.
-- Expanded the optional docs-site template with clearer setup guidance and a
-  contributing starter page.
-- Expanded template inventory checks and directory documentation to include the
-  generated repository README template.
-- Tightened template file validation and aligned generated workflow action
-  versions.
+- Aligned README and docs with the current implemented package scaffold and
+  planned V1 command behavior.
+- Quarantined inherited scaffold material so repoctx is presented as a
+  repository context tool.
+
+### Removed
+
+- Stale generated-repository example directories that belonged to the source
+  template rather than repoctx.
 
 ## Release Links
 
 - Unreleased:
-  `https://github.com/OWNER/REPOSITORY/compare/vLAST...HEAD`
+  `https://github.com/rogerchappel/repoctx/compare/v0.1.0...HEAD`
 - Latest release:
-  `https://github.com/OWNER/REPOSITORY/releases/latest`
-
-Replace `OWNER`, `REPOSITORY`, and `vLAST` after generating a project from this
-template.
+  `https://github.com/rogerchappel/repoctx/releases/latest`

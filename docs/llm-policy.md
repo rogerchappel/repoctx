@@ -1,6 +1,7 @@
 # LLM and Agent Policy
 
-This policy defines acceptable and unacceptable use of LLMs and AI agents for open-source work in this repository and repositories generated from this template.
+This policy defines acceptable and unacceptable use of LLMs and AI agents for
+open-source work in repoctx.
 
 ## Purpose
 
@@ -93,4 +94,5 @@ Documentation changes should be checked for internal consistency. Code changes s
 
 ## Generated Project Defaults
 
-Repositories generated from this template should keep an LLM policy, update it for their own risk profile, and make clear who can approve agent-authored work.
+Future repoctx integrations should keep an LLM policy, update it for their own
+risk profile, and make clear who can approve agent-authored work.

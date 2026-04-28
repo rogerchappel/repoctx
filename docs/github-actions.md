@@ -1,61 +1,41 @@
 # GitHub Actions
 
-This template includes minimal GitHub Actions that are safe for a new repository
-before it has application code.
+repoctx uses GitHub Actions for package verification and lightweight repository
+hygiene.
 
-## Included workflows
+## Current workflows
 
-- `CI` validates core repository files, checks that markdown files are not empty,
-  and scans generated-repository templates for stale template language.
-- `Docs` validates the docs directory and markdown file presence.
-- `branchbrief` creates a `branchbrief.md` artifact for pull requests.
+- `CI` installs dependencies, runs tests, typechecks, builds the package, and
+  performs repository hygiene checks.
+- `Docs` validates markdown presence and the docs directory.
+- `branchbrief` creates a pull request review artifact.
 
-The workflows do not require repository secrets. They use read-only repository
-permissions unless a generated repository intentionally adds write behavior.
+The workflows should not require repository secrets for normal pull request
+validation. Keep permissions explicit and read-only unless a future workflow has
+a specific reviewed need for write access.
 
-## Local template validation
+## Local validation
 
-Run the local repository hygiene check before changing template structure:
+Run the repoctx validation script before changing docs, examples, or public
+workspace guidance:
 
 ```sh
-bash scripts/validate-template.sh
+bash scripts/validate-repoctx.sh
 ```
 
-The script verifies required root files, docs, and template folders, then scans
-for unresolved double-brace placeholder markers outside approved template and
-reference paths. It is dependency-free and mirrors the lightweight checks this
-template expects maintainers and agents to run locally.
+The script checks required repoctx docs and examples, then scans project-facing
+documentation for unresolved template placeholders and stale source-scaffold
+identity.
 
-## Customizing CI for Node/npm
+## Node checks
 
-When the project becomes a Node package or app, add the relevant scripts to
-`package.json`:
+The package workflow mirrors these local commands:
 
-```json
-{
-  "scripts": {
-    "lint": "eslint .",
-    "test": "vitest run",
-    "typecheck": "tsc --noEmit",
-    "build": "tsup"
-  }
-}
+```sh
+npm test
+npm run typecheck
+npm run build
 ```
 
-The reusable workflow in `templates/github/workflows/ci.yml` calls these
-commands with `--if-present`, so generated repositories can add them one at a
-time after copying or adopting that workflow.
-
-If a project requires a specific Node version, add `actions/setup-node` before
-the optional Node checks:
-
-```yaml
-- name: Set up Node
-  uses: actions/setup-node@v4
-  with:
-    node-version: 22
-    cache: npm
-```
-
-Keep new workflow permissions explicit and avoid adding secrets unless the
-workflow cannot work without them.
+Use the smallest relevant local command while developing. Run all three before
+opening a release-oriented pull request or changing shared package behavior.

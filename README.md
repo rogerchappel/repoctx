@@ -16,11 +16,21 @@ That context includes local paths, GitHub remotes, project type, package manager
 
 ## Current status
 
-This repository is being built toward the V1 described in [docs/PRD.md](docs/PRD.md). The docs and examples in this branch describe the intended workspace format and CLI behavior. Runtime commands should be treated as planned unless the implementation is present on the branch you are using.
+This repository is being built toward the V1 described in [docs/PRD.md](docs/PRD.md).
+
+Current implementation on `main` includes:
+
+- a Node package scaffold with `repoctx --help` and `repoctx --version`
+- placeholder CLI command names for the intended V1 surface
+- scanning, Git metadata, detection, workspace schema, validation, merge, YAML, JSON, and table modules
+- tests for the implemented library modules and CLI help behavior
+- repoctx-specific workspace docs and examples
+
+The CLI subcommands listed below are still placeholders until command wiring lands. Treat command examples as target V1 behavior unless your branch contains the corresponding implementation.
 
 ## Quickstart
 
-Target V1 flow:
+Target V1 flow once command wiring is implemented:
 
 ```sh
 repoctx init
@@ -30,11 +40,11 @@ repoctx inspect branchbrief
 repoctx export --format json --output workspace.json
 ```
 
-Until the CLI is implemented, use the examples in `examples/` as reference workspace files for contributors, agents, and integration prototypes.
+Until those commands are wired, use the examples in `examples/` as reference workspace files for contributors, agents, and integration prototypes.
 
 ## CLI usage
 
-Planned primary commands:
+Current CLI command names, with implementation still pending:
 
 ```text
 repoctx init
@@ -48,7 +58,7 @@ repoctx export --format json
 repoctx doctor
 ```
 
-Planned nice-to-have V1 commands:
+Nice-to-have V1 command names, also pending:
 
 ```text
 repoctx list
@@ -166,6 +176,12 @@ See [ROADMAP.md](ROADMAP.md) for the working roadmap.
 ## Contributing
 
 Keep changes small, reviewable, and aligned with [AGENTS.md](AGENTS.md). Runtime work should not overclaim behavior in docs until commands are implemented and verified.
+
+Run the repoctx hygiene check before docs or example changes:
+
+```sh
+bash scripts/validate-repoctx.sh
+```
 
 ## License
 

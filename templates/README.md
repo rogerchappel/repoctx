@@ -1,38 +1,12 @@
-# Templates
+# Quarantined Template Archive
 
-This directory contains reusable repository files that can be copied into generated
-repositories or used as references when setting up repository policy.
+This directory is inherited source-scaffold material. It is not the repoctx
+product surface and should not be used as primary documentation for this
+repository.
 
-## Customisation
+The archive remains in the tree while CI still checks for it. New repoctx work
+should prefer `docs/`, `examples/workspace.yaml`, `examples/workspace.json`, and
+`examples/rogerchappel-workspace.yaml`.
 
-Before copying a template into a generated repository, replace any double-brace
-placeholders. Common placeholders are documented in
-[`docs/template-variables.md`](../docs/template-variables.md).
-
-At minimum, most generated repositories should replace:
-
-- `{{PROJECT_NAME}}`
-- `{{PROJECT_DESCRIPTION}}`
-- `{{AUTHOR_NAME}}`
-- `{{GITHUB_OWNER}}`
-- `{{YEAR}}`
-- `{{LICENSE}}`
-
-For a practical setup flow, see
-[`docs/repo-customisation.md`](../docs/repo-customisation.md).
-
-## Directory Map
-
-- `agents/`: agent operating instruction templates.
-- `branchbrief/`: branchbrief usage notes for generated repositories.
-- `cloudflare-pages/`: optional Cloudflare Pages deployment templates.
-- `contributors/`: contributor, conduct, and review handoff templates.
-- `dependabot/`: dependency update policy notes.
-- `docs-site/`: optional Astro/Starlight docs-site starter files.
-- `github/`: issue and pull request templates.
-- `license/`: license text templates.
-- `npm-package/`: optional JavaScript npm package starter files.
-- `readme/`: generated repository README template.
-- `release/`: changelog, roadmap, release process, and release checklist
-  templates.
-- `security/`: security policy and vulnerability reporting templates.
+Do not add new template features here unless the repository intentionally
+restores template generation as a scoped product feature.

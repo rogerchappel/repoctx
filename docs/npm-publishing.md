@@ -1,51 +1,33 @@
-# Optional npm Package Scaffold
+# npm Publishing
 
-This repository includes an optional npm package starting point at
-`templates/npm-package/`.
+repoctx is a Node package with a CLI entry point. Publishing is not automated in
+V1 and must remain a human-approved release action.
 
-Use it only when the project you create from this template needs to publish a
-small JavaScript package to npm. Do not copy it into projects that are docs-only,
-GitHub Action-only, or otherwise do not need Node package metadata.
+## Preflight
 
-## What The Scaffold Provides
+Before publishing:
 
-- Minimal ESM package structure.
-- Placeholder package metadata for name, description, author, and license.
-- A tiny exported function in `src/index.js`.
-- A Node built-in test in `test/index.test.js`.
-- No runtime dependencies.
-- No top-level repository `package.json`.
-
-## Use The Scaffold
-
-1. Copy `templates/npm-package/` into the root of the generated repository.
-2. Replace these placeholders:
-   - `{{PACKAGE_NAME}}`
-   - `{{PACKAGE_DESCRIPTION}}`
-   - `{{AUTHOR_NAME}}`
-   - `{{LICENSE}}`
-3. Update `src/index.js` with real package code.
-4. Update `test/index.test.js` with behavior that matches the package.
-5. Run the package checks from inside the copied package directory:
+1. Confirm `package.json` name, version, binary path, exports, license, and
+   `files` list are intentional.
+2. Run:
 
 ```sh
 npm test
+npm run typecheck
+npm run build
 ```
 
-The scaffold intentionally does not include TypeScript. If the generated repository
-chooses TypeScript, add `typescript`, a `tsconfig.json`, and a `typecheck` script
-in that generated repository as a separate reviewable change.
+3. Pack locally:
 
-## Before Publishing
+```sh
+npm pack --dry-run
+```
 
-Before publishing a generated package:
+4. Inspect the tarball contents before publishing.
+5. Publish only from a clean release commit after explicit maintainer approval.
 
-1. Confirm the package name is available on npm.
-2. Confirm the chosen license is correct for the project.
-3. Add complete package documentation.
-4. Add meaningful tests for public behavior.
-5. Run `npm pack --dry-run` and inspect the package contents.
-6. Publish from a clean, tagged release commit.
+## Release notes
 
-This scaffold is a starting point only. It is not release automation, security
-policy, or a substitute for a maintainer review before publishing.
+Update [CHANGELOG.md](../CHANGELOG.md) before a tagged package release. Keep
+package publishing changes separate from unrelated feature or documentation
+changes.
