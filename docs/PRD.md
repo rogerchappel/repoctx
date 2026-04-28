@@ -1,382 +1,1016 @@
-# PRD: agentic-oss-template
+# PRD: repoctx
 
 ## Product Name
 
-**agentic-oss-template**
+**repoctx**
 
 ## Tagline
 
-A practical starter kit for agent-friendly open-source repositories.
+Give agents a map of your repos, commands, policies, and risks.
 
 ## One-Line Pitch
 
-`agentic-oss-template` gives new OSS projects a reviewable foundation: agent instructions, atomic commit policy, review packs, GitHub issue and PR templates, CI, Dependabot, branchbrief support, release docs, security policy, contributor docs, optional npm package scaffolding, and optional docs-site deployment guidance.
+`repoctx` is an agent-readable repo context registry for multi-repo development workflows. It scans local repositories, detects useful metadata, and produces a workspace map that tools like `taskbrief`, `branchbrief`, CrewCMD, Codex, OpenClaw, Claude Code, and GitHub Copilot can use to understand where code lives, how to verify it, and what is safe to touch.
 
 ## 1. Objective
 
-Create a reusable public GitHub template repository that Roger Chappel can use to launch open-source projects quickly and consistently.
+Create an open-source CLI that builds and maintains a machine-readable map of a developer's local repositories.
 
-The template is intended for:
+The map should answer:
 
-- CLI tools
-- agentic developer utilities
-- Codex/OpenClaw workflows
-- GitHub Actions tooling
-- npm packages
-- documentation-focused projects
-- OSS experiments that may become maintained projects
+- What repos exist?
+- Where are they locally?
+- What GitHub remote do they use?
+- What type of project is each repo?
+- What package manager does each repo use?
+- What commands verify/build/test the repo?
+- Does the repo have docs?
+- Does the repo have `AGENTS.md`?
+- Does the repo use `branchbrief`?
+- Is the repo production-sensitive?
+- Which paths should agents avoid by default?
+- Which policies apply before an agent starts work?
 
-The repository is a **template and documentation source**, not a product implementation. It should help new projects start with clear governance, safe agent workflows, dependency hygiene, release discipline, and reviewable automation.
+`repoctx` should become the shared context layer for the rest of the agentic development stack.
 
-## 2. Core Product Principle
+```text
+repoctx      = repo/workspace context
+taskbrief    = messy input -> structured tasks using repoctx
+CrewCMD      = task queue -> agents/worktrees/PRs using repoctx
+branchbrief  = completed branch -> review brief using repoctx
+```
 
-The template should help projects move fast without becoming chaotic.
+## 2. Why This Exists
 
-> Fast OSS shipping requires boring infrastructure: clear instructions, safe automation, reviewable branches, dependency hygiene, release discipline, and contributor trust.
+Existing multi-repo tools help you list repos or run commands across them.
 
-The template should support both humans and AI agents.
+Examples of existing categories:
 
-## 3. Target Users
+- multi-repo status tools
+- bulk git command runners
+- monorepo/meta-repo managers
+- scripts that run changes across GitHub repos
+
+repoctx is different.
+
+It does not primarily exist to run commands across repos.
+
+It exists to describe repos in the way agents need:
+
+- verification commands
+- allowed/forbidden paths
+- risk profile
+- repo type
+- docs URL
+- default branch
+- production sensitivity
+- expected branch/PR policy
+- agent instructions
+- integrations
+
+This makes agent work safer, more repeatable, and less dependent on guessing.
+
+## 3. Core Product Principle
+
+Agents should not have to guess how a repo works.
+
+repoctx should make implicit repo knowledge explicit.
+
+The output should be boring, predictable, and machine-readable.
+
+## 4. Target Users
 
 ### Primary User
 
-Roger Chappel, creating OSS projects under the `rogerchappel` GitHub identity.
+Roger Chappel, working across many OSS, product, and company repos with Codex, OpenClaw, CrewCMD, and other agents.
 
 ### Secondary Users
 
-- developers building agent-assisted OSS tools
-- maintainers using Codex, OpenClaw, Claude Code, Copilot, or similar agents
-- contributors who need clear expectations before opening issues or PRs
-- AI agents bootstrapping or maintaining repositories
-- people who want a serious OSS starter without a large framework
+- developers working across many local repos
+- AI-assisted developers
+- OSS maintainers
+- technical founders
+- teams using coding agents
+- people building multi-repo automation
+- CrewCMD/taskbrief/branchbrief users
 
-## 4. Repository Type
+## 5. Relationship to Existing Tools
 
-This repository should be usable as a **public GitHub template repository**.
+repoctx should not try to replace tools like:
 
-Suggested GitHub repository description:
+- gita
+- myrepos
+- mani
+- git-xargs
+- repo status dashboards
+- monorepo managers
+
+Those tools mostly answer:
+
+What repos do I have, and can I run commands across them?
+
+repoctx answers:
+
+What does an agent need to know before working in this repo?
+
+## 6. Non-Goals
+
+V1 should not:
+
+- dispatch agents
+- run arbitrary commands across all repos
+- mutate repositories
+- open PRs
+- create branches
+- edit repo files automatically
+- push to remotes
+- require GitHub authentication
+- require API keys
+- require an LLM
+- become a dashboard
+- become a hosted service
+- replace CrewCMD
+- replace taskbrief
+- replace branchbrief
+
+V1 should be a local-first scanner, registry, validator, and exporter.
+
+## 7. V1 Scope
+
+V1 should include:
+
+1. CLI package
+2. local repo scanner
+3. workspace config file
+4. repo metadata detection
+5. package manager detection
+6. common command detection
+7. repo type hints
+8. agent policy fields
+9. risk policy fields
+10. YAML and JSON output
+11. validation command
+12. inspect command
+13. docs and examples
+14. no network required by default
+
+## 8. V2 Scope
+
+V2 may add:
+
+- GitHub API enrichment
+- GitHub topics/description sync
+- docs URL detection
+- Cloudflare Pages detection
+- branchbrief integration
+- taskbrief integration
+- CrewCMD integration
+- repo health scoring
+- policy packs
+- interactive editing
+- import from gita, mani, or other repo lists
+- support for repo groups/tags
+- local TUI
+
+## 9. V3 Scope
+
+V3 may add:
+
+- org-level workspace maps
+- dependency graph between repos
+- dashboard/static site output
+- issue seeding
+- integration with agent dispatch systems
+- auto-created repo contexts from GitHub orgs
+- policy-as-code
+- multi-machine sync
+- per-agent context generation
+- historical repo health reports
+
+## 10. Required Repository Structure
 
 ```text
-Practical starter kit for agent-friendly open-source projects.
+repoctx/
+  README.md
+  LICENSE
+  AGENTS.md
+  CONTRIBUTING.md
+  SECURITY.md
+  CODE_OF_CONDUCT.md
+  CHANGELOG.md
+  ROADMAP.md
+  docs/
+    PRD.md
+    workspace-schema.md
+    scanning.md
+    validation.md
+    risk-policy.md
+    integrations.md
+    taskbrief.md
+    branchbrief.md
+    crewcmd.md
+    examples.md
+    release-process.md
+  src/
+    cli.ts
+    index.ts
+    types.ts
+    scan/
+      scanWorkspace.ts
+      findGitRepos.ts
+      detectRepoMetadata.ts
+    git/
+      getRemote.ts
+      getDefaultBranch.ts
+      getCurrentBranch.ts
+      getStatus.ts
+    detect/
+      detectPackageManager.ts
+      detectCommands.ts
+      detectProjectType.ts
+      detectDocs.ts
+      detectAgentInstructions.ts
+      detectBranchbrief.ts
+    workspace/
+      loadWorkspace.ts
+      writeWorkspace.ts
+      mergeWorkspace.ts
+      validateWorkspace.ts
+      schema.ts
+    output/
+      yaml.ts
+      json.ts
+      table.ts
+    inspect/
+      inspectRepo.ts
+    policy/
+      defaultPolicies.ts
+      riskDefaults.ts
+    errors/
+      RepoctxError.ts
+  examples/
+    workspace.yaml
+    workspace.json
+    rogerchappel-workspace.yaml
+  tests/
+    scan/
+    detect/
+    workspace/
+    output/
+    fixtures/
+  .github/
+    workflows/
+      ci.yml
+      branchbrief.yml
+    dependabot.yml
+    ISSUE_TEMPLATE/
+      bug_report.md
+      feature_request.md
+      agent_task.md
+    pull_request_template.md
 ```
 
-Suggested GitHub topics:
+## 11. CLI Requirements
 
-- `agentic-development`
-- `oss-template`
-- `github-actions`
-- `dependabot`
-- `branchbrief`
-- `codex`
-- `openclaw`
-- `developer-tools`
-- `templates`
-- `open-source`
+### Primary Commands
 
-## 5. Current V1 Surface Area
+```text
+repoctx init
+repoctx scan <path>
+repoctx scan <path> --output workspace.yaml
+repoctx add <name> --path <path>
+repoctx inspect <name>
+repoctx validate
+repoctx export --format yaml
+repoctx export --format json
+repoctx doctor
+```
 
-V1 is the current template foundation. It includes the following files and directories in this repository.
+### Nice-to-Have V1 Commands
 
-### Core Repository Files
+```text
+repoctx list
+repoctx list --type oss-cli
+repoctx list --tag agentic
+repoctx remove <name>
+repoctx update <name>
+```
+
+### Example Usage
+
+```text
+repoctx init
+repoctx scan ~/Developer/my-opensource --output workspace.yaml
+repoctx add branchbrief --path ~/Developer/my-opensource/branchbrief
+repoctx inspect branchbrief
+repoctx validate
+repoctx export --format json --output workspace.json
+```
+
+## 12. Workspace File
+
+Default file name:
+
+```text
+workspace.yaml
+```
+
+Alternative supported names:
+
+```text
+repoctx.yaml
+repos.yaml
+```
+
+V1 should prefer:
+
+```text
+workspace.yaml
+```
+
+### Example Workspace
+
+```yaml
+version: "0.1"
+workspace: rogerchappel
+defaults:
+  default_base: main
+  requires_branch: true
+  review_pack_required: true
+  forbidden_by_default:
+    - .env*
+    - secrets/**
+    - credentials/**
+repos:
+  branchbrief:
+    path: ~/Developer/my-opensource/branchbrief
+    remote: https://github.com/rogerchappel/branchbrief.git
+    type: oss-cli
+    default_base: main
+    docs_url: https://branchbrief.rogerchappel.com
+    package_manager: npm
+    commands:
+      install: npm ci
+      test: npm test
+      build: npm run build
+      typecheck: npm run typecheck
+    files:
+      agents: AGENTS.md
+      changelog: CHANGELOG.md
+      roadmap: ROADMAP.md
+    integrations:
+      branchbrief: true
+      taskbrief: true
+      crewcmd: false
+    risk:
+      production_sensitive: false
+      forbidden_by_default:
+        - .env*
+        - secrets/**
+    agents:
+      requires_branch: true
+      requires_pr: true
+      review_pack_required: true
+  product-videogen:
+    path: ~/Developer/work/product-videogen
+    remote: git@github.com:example/product-videogen.git
+    type: product
+    default_base: main
+    package_manager: npm
+    commands:
+      install: npm ci
+      test: npm test
+      build: npm run build
+    risk:
+      production_sensitive: true
+      forbidden_by_default:
+        - billing/**
+        - auth/**
+        - production/**
+        - .env*
+    agents:
+      requires_branch: true
+      requires_pr: true
+      review_pack_required: true
+      human_approval_required: true
+```
+
+## 13. Workspace Schema
+
+Every repo entry should support:
+
+```yaml
+path:
+remote:
+type:
+default_base:
+docs_url:
+package_manager:
+commands:
+files:
+integrations:
+risk:
+agents:
+tags:
+notes:
+```
+
+### Required Fields
+
+Minimum valid repo entry:
+
+```yaml
+repos:
+  branchbrief:
+    path: ~/Developer/my-opensource/branchbrief
+```
+
+Everything else can be detected or filled later.
+
+### Repo Types
+
+Supported initial repo types:
+
+```text
+oss-cli
+oss-library
+docs-site
+github-action
+template
+product
+production-saas
+company
+client
+internal-tool
+experiment
+unknown
+```
+
+### Commands
+
+Supported command keys:
+
+```yaml
+commands:
+  install:
+  test:
+  build:
+  typecheck:
+  lint:
+  format:
+  dev:
+  docs:
+  release_check:
+```
+
+### Risk Fields
+
+```yaml
+risk:
+  production_sensitive: false
+  forbidden_by_default:
+    - .env*
+    - secrets/**
+  high_risk_paths:
+    - auth/**
+    - billing/**
+    - migrations/**
+  medium_risk_paths:
+    - .github/workflows/**
+    - package.json
+```
+
+### Agent Fields
+
+```yaml
+agents:
+  requires_branch: true
+  requires_pr: true
+  review_pack_required: true
+  human_approval_required: false
+  preferred_agent: codex
+```
+
+### Integration Fields
+
+```yaml
+integrations:
+  branchbrief: true
+  taskbrief: true
+  crewcmd: true
+  copilot: true
+```
+
+## 14. Scanner Requirements
+
+`repoctx scan <path>` should:
+
+1. recursively find Git repos
+2. ignore nested `.git` internals
+3. respect common ignore folders:
+   - `node_modules`
+   - `.venv`
+   - `dist`
+   - `build`
+   - `.next`
+   - `.turbo`
+   - `.cache`
+4. detect repo name from folder or remote
+5. detect remote URL
+6. detect default branch
+7. detect current branch
+8. detect package manager
+9. detect common package scripts
+10. detect project type
+11. detect docs files/site config
+12. detect `AGENTS.md`
+13. detect branchbrief workflow if present
+14. write/update workspace config
+
+## 15. Detection Requirements
+
+### Git Remote
+
+Detect:
+
+```text
+git remote get-url origin
+```
+
+Support:
+
+```text
+https://github.com/owner/repo.git
+git@github.com:owner/repo.git
+```
+
+Parse owner/repo if possible.
+
+### Default Branch
+
+Detection order:
+
+1. symbolic ref for origin HEAD
+2. local main
+3. local master
+4. fallback to current branch
+5. unknown
+
+### Package Manager
+
+Detect by lockfile:
+
+```text
+pnpm-lock.yaml => pnpm
+package-lock.json => npm
+yarn.lock => yarn
+bun.lockb => bun
+```
+
+### Commands
+
+From `package.json` scripts:
+
+```json
+{
+  "scripts": {
+    "test": "...",
+    "build": "...",
+    "typecheck": "...",
+    "lint": "...",
+    "dev": "..."
+  }
+}
+```
+
+Map to:
+
+```yaml
+commands:
+  test: npm test
+  build: npm run build
+  typecheck: npm run typecheck
+  lint: npm run lint
+```
+
+Use detected package manager.
+
+### Project Type Heuristics
+
+Examples:
+
+- `astro.config.*` + `src/content/docs` => `docs-site`
+- `package.json` bin => `oss-cli`
+- `action.yml` => `github-action`
+- `templates/` + `AGENTS.md` => `template`
+- `next.config.*` => `product` or `web-app`
+- `wrangler.toml` => `cloudflare-deployable`
+
+If uncertain:
+
+```yaml
+type: unknown
+```
+
+Do not overclaim.
+
+### Docs Detection
+
+Detect:
 
 - `README.md`
-- `LICENSE`
+- `docs/`
+- `astro.config.*`
+- `src/content/docs/`
+- `wrangler.toml`
+
+### Agent Instructions Detection
+
+Detect:
+
 - `AGENTS.md`
-- `CONTRIBUTING.md`
-- `SECURITY.md`
-- `CODE_OF_CONDUCT.md`
-- `CHANGELOG.md`
-- `ROADMAP.md`
-- `scripts/validate-template.sh`
+- `CLAUDE.md`
+- `.github/copilot-instructions.md`
 
-### Examples
+### Branchbrief Detection
 
-- `examples/cli-tooling/README.md`
-- `examples/docs-only/README.md`
-- `examples/minimal-library/README.md`
+Detect:
 
-### GitHub Configuration
-
-- `.github/dependabot.yml`
-- `.github/pull_request_template.md`
-- `.github/ISSUE_TEMPLATE/bug_report.md`
-- `.github/ISSUE_TEMPLATE/feature_request.md`
-- `.github/ISSUE_TEMPLATE/agent_task.md`
-- `.github/workflows/ci.yml`
 - `.github/workflows/branchbrief.yml`
-- `.github/workflows/docs.yml`
+- `BRANCH_BRIEF.md`
+- branchbrief config if later added
 
-### Documentation
+## 16. Validation Requirements
+
+`repoctx validate` should check:
+
+- workspace file exists
+- all repo paths exist
+- repo paths are Git repos
+- duplicate repo names
+- invalid repo types
+- missing default branch
+- missing remote
+- commands reference package scripts that do not exist
+- production-sensitive repos have forbidden paths
+- agent-enabled repos require branch/review policy
+- docs URLs are valid-looking URLs if present
+
+Validation output should be human-readable.
+
+Example:
+
+```text
+✓ branchbrief: path exists
+✓ branchbrief: git repo detected
+✓ branchbrief: npm scripts detected
+⚠ branchbrief: docs_url missing
+⚠ product-videogen: production_sensitive true but no high_risk_paths configured
+✗ old-repo: path does not exist
+```
+
+JSON output should be supported later, but V1 can be text-first.
+
+## 17. Inspect Requirements
+
+`repoctx inspect <name>` should show one repo's context.
+
+Example:
+
+```text
+repoctx inspect branchbrief
+```
+
+Output:
+
+```text
+branchbrief
+  Path: ~/Developer/my-opensource/branchbrief
+  Remote: https://github.com/rogerchappel/branchbrief.git
+  Type: oss-cli
+  Base: main
+  Package manager: npm
+  Commands:
+    test: npm test
+    build: npm run build
+    typecheck: npm run typecheck
+  Docs: https://branchbrief.rogerchappel.com
+  AGENTS.md: yes
+  branchbrief workflow: yes
+  Production sensitive: no
+  Requires PR: yes
+```
+
+## 18. Output Requirements
+
+Support:
+
+```text
+repoctx export --format yaml
+repoctx export --format json
+```
+
+Default output file:
+
+```text
+workspace.yaml
+```
+
+Explicit output:
+
+```text
+repoctx export --format json --output workspace.json
+```
+
+YAML should be readable and stable.
+
+JSON should be machine-readable for tools.
+
+## 19. Integration Requirements
+
+### taskbrief
+
+taskbrief should be able to consume `workspace.yaml`.
+
+repoctx should document this.
+
+Example:
+
+```text
+taskbrief parse brain-dump.txt --workspace workspace.yaml
+```
+
+### branchbrief
+
+branchbrief should eventually use repoctx to improve:
+
+- risk classification
+- suggested verification commands
+- repo-specific policies
+- docs URLs
+
+Example future command:
+
+```text
+branchbrief --workspace workspace.yaml
+```
+
+### CrewCMD
+
+CrewCMD should use repoctx to know:
+
+- where repos live
+- which branch policy applies
+- which commands verify each repo
+- which repos are production-sensitive
+
+Example future command:
+
+```text
+crewcmd dispatch queue.yaml --workspace workspace.yaml
+```
+
+### Codex/OpenClaw
+
+Agents should be able to read the workspace map to choose:
+
+- correct repo
+- safe paths
+- verification commands
+- review requirements
+
+## 20. Security and Safety Requirements
+
+Default mode must:
+
+- not call external APIs
+- not require GitHub auth
+- not require LLMs
+- not mutate repos
+- not edit files inside scanned repos
+- only write the workspace output file when requested
+- not read `.env` contents
+- not print secrets
+
+repoctx may detect that `.env` files exist, but must not read their contents.
+
+## 21. README Requirements
+
+README should include:
+
+- what repoctx is
+- why it exists
+- how it differs from multi-repo command runners
+- quickstart
+- CLI usage
+- example `workspace.yaml`
+- how taskbrief uses it
+- how branchbrief can use it
+- how CrewCMD can use it
+- local-first safety policy
+- roadmap
+
+Opening copy:
+
+```markdown
+# repoctx
+
+Give agents a map of your repos, commands, policies, and risks.
+
+`repoctx` scans your local development workspace and creates a machine-readable repo context file for agentic development workflows. It helps tools like taskbrief, branchbrief, CrewCMD, Codex, OpenClaw, Claude Code, and Copilot understand where repos live, how to verify them, and what is safe to touch.
+
+It does not dispatch agents or run commands across repos. It gives your agents context before they act.
+```
+
+## 22. Docs Requirements
+
+Create:
 
 - `docs/PRD.md`
-- `docs/agent-prompts.md`
-- `docs/agent-workflow.md`
+- `docs/workspace-schema.md`
+- `docs/scanning.md`
+- `docs/validation.md`
+- `docs/risk-policy.md`
+- `docs/integrations.md`
+- `docs/taskbrief.md`
 - `docs/branchbrief.md`
-- `docs/cloudflare-pages.md`
-- `docs/copilot.md`
-- `docs/dependency-policy.md`
-- `docs/github-actions.md`
-- `docs/llm-policy.md`
-- `docs/npm-publishing.md`
-- `docs/release-checklist.md`
+- `docs/crewcmd.md`
+- `docs/examples.md`
 - `docs/release-process.md`
-- `docs/repo-customisation.md`
-- `docs/security-policy.md`
-- `docs/template-variables.md`
 
-### Template Library
+Docs should be useful for both contributors and agents.
 
-- `templates/README.md`
-- `templates/agents/AGENTS.template.md`
-- `templates/agents/AGENTS.snippet.md`
-- `templates/branchbrief/README.md`
-- `templates/cloudflare-pages/README.md`
-- `templates/cloudflare-pages/deploy-docs-cloudflare-pages.yml`
-- `templates/cloudflare-pages/wrangler.toml.template`
-- `templates/contributors/CODE_OF_CONDUCT.template.md`
-- `templates/contributors/CONTRIBUTING.template.md`
-- `templates/contributors/REVIEW_PACK.template.md`
-- `templates/dependabot/README.md`
-- `templates/docs-site/README.md`
-- `templates/docs-site/astro.config.mjs`
-- `templates/docs-site/package.json`
-- `templates/docs-site/src/content.config.ts`
-- `templates/docs-site/src/content/docs/contributing.mdx`
-- `templates/docs-site/src/content/docs/getting-started.mdx`
-- `templates/docs-site/src/content/docs/index.mdx`
-- `templates/docs-site/tsconfig.json`
-- `templates/github/dependabot.yml`
-- `templates/github/pull_request_template.md`
-- `templates/github/ISSUE_TEMPLATE/agent_task.md`
-- `templates/github/ISSUE_TEMPLATE/bug_report.md`
-- `templates/github/ISSUE_TEMPLATE/feature_request.md`
-- `templates/github/workflows/branchbrief.yml`
-- `templates/github/workflows/ci.yml`
-- `templates/github/workflows/docs.yml`
-- `templates/license/LICENSE.MIT.template`
-- `templates/npm-package/README.md`
-- `templates/npm-package/package.json`
-- `templates/npm-package/src/index.js`
-- `templates/npm-package/test/index.test.js`
-- `templates/readme/README.template.md`
-- `templates/release/CHANGELOG.template.md`
-- `templates/release/ROADMAP.template.md`
-- `templates/release/release-checklist.template.md`
-- `templates/release/release-process.template.md`
-- `templates/security/SECURITY.github-private-reporting.template.md`
-- `templates/security/SECURITY.template.md`
+## 23. Testing Requirements
 
-## 6. V1 Requirements
+Tests should cover:
 
-V1 should remain focused on repository hygiene and reusable templates.
+- scanning fixture directories
+- detecting Git repos
+- parsing GitHub remote URLs
+- detecting package managers
+- detecting package scripts
+- detecting project type
+- writing YAML
+- writing JSON
+- validating workspace entries
+- inspecting a repo entry
+- ignoring common folders
+- handling missing paths
+- handling repos without remotes
 
-V1 must:
+## 24. Suggested Tech Stack
 
-- provide a clear README for humans and agents
-- use the MIT License
-- include agent operating instructions in `AGENTS.md`
-- include reusable agent prompts for common OSS maintenance tasks
-- support atomic commits, review packs, risk classification, and verification discipline
-- provide GitHub issue and PR templates
-- include safe baseline GitHub Actions workflows
-- include Dependabot configuration and dependency review guidance
-- document branchbrief usage for PR review support and agent handoffs
-- include release process, release checklist, roadmap, and changelog guidance
-- include contributor, security, and code of conduct docs
-- provide optional npm package scaffold files
-- provide optional docs-site scaffold files
-- document Cloudflare Pages deployment as optional
-- document Copilot usage as optional
-- keep LLM usage optional, explicit, and credential-safe
+Use TypeScript/Node.
 
-V1 must not:
+Recommended dependencies:
 
-- create a full app
-- create fake product logic
-- require API keys
-- require Cloudflare
-- require npm publishing
-- require LLMs
-- assume every generated repository is Node-only
-- include private company or client details
-- include secrets
-- add a generator CLI
-- require generated repositories to keep this template repository's validation
-  script
+- commander or cac for CLI
+- yaml for YAML read/write
+- zod for schema validation
+- execa for git commands
+- fast-glob or globby for scanning
+- vitest for tests
+- tsup for builds
 
-## 7. Implemented Optional Areas
+Keep dependencies modest.
 
-Some optional capabilities are already represented in V1 as documentation or template files. They are available for future generated repositories to copy or adapt, but they are not mandatory for every repository generated from this template.
+## 25. Suggested Initial Commits
 
-### Docs Site
+```text
+chore(repo): scaffold repoctx package
+docs(prd): define repo context registry
+feat(scan): discover local git repositories
+feat(git): detect remotes and default branches
+feat(detect): infer package manager and commands
+feat(detect): identify repo type and agent files
+feat(workspace): write workspace yaml
+feat(validate): validate workspace entries
+feat(inspect): show repo context summary
+docs(readme): document repoctx workflow
+test(scan): cover repo discovery fixtures
+```
 
-Implemented as `templates/docs-site/`.
+## 26. Agent Work Plan
 
-The current scaffold is intentionally small and includes Astro-oriented docs-site starter files. It is a template surface, not a built or deployed documentation site for this repository.
+### Agent 1: Repo Scaffold
 
-### Cloudflare Pages
-
-Implemented as guidance and templates:
-
-- `docs/cloudflare-pages.md`
-- `templates/cloudflare-pages/README.md`
-- `templates/cloudflare-pages/deploy-docs-cloudflare-pages.yml`
-- `templates/cloudflare-pages/wrangler.toml.template`
-
-Cloudflare Pages remains optional. The repository should not require Cloudflare credentials or automatic deployment.
-
-### Copilot
-
-Implemented as guidance in `docs/copilot.md`.
-
-Copilot remains optional. The current repository does not include a dedicated `.github/copilot-instructions.md` template.
-
-### npm Package Scaffold
-
-Implemented as `templates/npm-package/`.
-
-The current scaffold is a small JavaScript package starter. It is not a full TypeScript CLI generator and does not imply that all future generated repositories must publish to npm.
-
-### Template Validation
-
-Implemented as `scripts/validate-template.sh`.
-
-The current script checks required root files, documentation files, template directories, and unresolved placeholders outside allowed template paths. It validates this template repository; generated repositories may keep, adapt, or remove it during customisation.
-
-### Examples
-
-Implemented as `examples/`.
-
-The examples show documentation-first generated repository shapes for a minimal library, CLI/tooling project, and docs-only project. They are illustrative, not mandatory presets.
-
-## 8. Future Enhancements
-
-The following ideas are explicitly future work unless implemented in a separate PR.
-
-### Expanded Validation
-
-Future enhancement.
-
-Potential additions:
-
-- `scripts/check-template`
-- `scripts/list-template-files`
-
-These scripts could extend current validation with stricter file inventory checks, YAML parsing, Markdown link checks, and accidental `.env` detection.
-
-### Generator CLI
-
-Future enhancement.
-
-A future `create-agentic-oss` CLI could copy templates, replace placeholders, select repository presets, and prepare a new repository. V1 remains a template repository, not a generator.
-
-### Copilot Instruction Template
-
-Future enhancement.
-
-A future template could add `templates/github/copilot-instructions.md` or `.github/copilot-instructions.md` guidance. Current V1 only documents optional Copilot usage in `docs/copilot.md`.
-
-### Expanded Docs Site
-
-Future enhancement.
-
-The current docs-site template is intentionally minimal. A future PR could add more pages, navigation, examples, search configuration, and stricter build validation.
-
-### Cloudflare Pages Automation
-
-Future enhancement.
-
-The current repository provides optional Cloudflare Pages guidance and template files. Future work could add more complete deployment setup notes, preview environment conventions, or project-specific deployment examples. The template should still avoid requiring Cloudflare by default.
-
-## 9. Acceptance Criteria
-
-V1 is acceptable when:
-
-- the top-level README explains what the template is and how to use it
-- MIT license exists
-- AGENTS.md exists and defines the agent workflow
-- contributor, security, and code of conduct files exist
-- changelog and roadmap files exist
-- Dependabot config exists
-- GitHub issue templates exist
-- PR template exists
-- CI, docs, and branchbrief workflows exist
-- release process docs exist
-- dependency policy docs exist
-- branchbrief docs exist
-- optional Cloudflare Pages docs are clearly optional
-- optional Copilot docs are clearly optional
-- optional npm package scaffold exists
-- optional docs-site scaffold exists
-- reusable agent prompt library exists
-- MIT license template exists
-- template variables doc exists
-- repository customisation guide exists
-- no private company or client details are present
-- no secrets are present
-- Markdown renders cleanly
-- YAML is syntactically reasonable
-- future-only items are not described as already implemented
-
-## 10. Review and Verification Expectations
-
-Changes to this repository should follow `AGENTS.md`:
-
-1. Work on a branch.
-2. Keep each commit to one reviewable intent.
-3. Use Conventional Commits.
-4. Review `git status` and `git diff`.
-5. Stage only related files.
-6. Run the smallest relevant verification.
-7. Return a review pack.
-
-For PRD updates, verification should include:
-
-- inspect the current file tree
-- confirm the PRD only promises implemented files as V1 surface area
-- run the requested keyword scan for implemented and future-only areas
-- manually review rendered Markdown structure
-
-## 11. Future Roadmap
-
-### V1 - Template Foundation
-
-- MIT license
+- TypeScript package
+- CLI shell
+- README skeleton
 - AGENTS.md
-- GitHub templates
-- Dependabot
+- docs skeleton
 - CI
+
+### Agent 2: Git Scanner
+
+- find git repos
+- ignore common folders
+- parse remotes
+- detect branches
+
+### Agent 3: Project Detector
+
+- package manager
+- package scripts
+- project type
+- docs/agent files
 - branchbrief workflow
-- release-cycle docs
-- optional npm scaffold
-- optional docs-site scaffold
-- optional Cloudflare Pages guidance
-- optional Copilot guidance
 
-### V2 - Generator and Validation
+### Agent 4: Workspace Schema
 
-- expanded validation checks
-- CLI generator
-- placeholder replacement
-- repository type presets
-- GitHub labels sync
-- expanded docs-site template
-- Copilot instruction template
-- docs deployment checklist
+- zod schema
+- YAML/JSON read/write
+- merge/update logic
+- validation
 
-### V3 - Repo Factory
+### Agent 5: CLI Commands
 
-- automatic GitHub repository creation
-- issue seeding
-- CrewCMD integration notes
-- branchbrief setup automation
-- docs deployment setup automation
-- npm publishing setup guidance
-- Cloudflare Pages setup guidance
-- project metadata index generation
+- init
+- scan
+- add
+- inspect
+- validate
+- export
 
-## 12. Final Product Promise
+### Agent 6: Docs and Examples
 
-`agentic-oss-template` makes serious OSS repository setup repeatable.
+- README
+- workspace schema docs
+- examples
+- integration docs
 
-It helps future generated repositories start with trust, safety, reviewability, release discipline, and agent-friendly workflows already in place.
+## 27. V1 Acceptance Criteria
+
+V1 is complete when:
+
+- CLI package exists
+- `repoctx --help` works
+- `repoctx init` creates a workspace file
+- `repoctx scan <path>` finds local git repos
+- scanner ignores common folders
+- remote URLs are detected
+- default branches are detected where possible
+- package managers are detected
+- package scripts are mapped to commands
+- project type is inferred or marked unknown
+- `AGENTS.md` detection works
+- branchbrief workflow detection works
+- YAML output works
+- JSON output works
+- `repoctx validate` reports useful results
+- `repoctx inspect <name>` works
+- no network calls are required
+- no repo mutation occurs
+- README explains why this is not a multi-repo command runner
+- docs exist
+- tests pass
+
+## 28. Required Review Pack
+
+Every agent must return:
+
+```markdown
+## Review Pack
+Repo:
+Branch:
+PR:
+Task:
+Status:
+Summary:
+Commits:
+Files changed:
+Verification:
+Risk level:
+Rollback plan:
+Human decision needed:
+Next recommended task:
+```
+
+## 29. First Example Workspace
+
+Create:
+
+```text
+examples/rogerchappel-workspace.yaml
+```
+
+It should include example entries for:
+
+- branchbrief
+- taskbrief
+- agentic-team-playbook
+- agentic-oss-template
+- CrewCMD
+- product-videogen
+
+Use placeholder paths and clearly mark them as examples.
+
+Do not include private credentials or sensitive details.
+
+## 30. Final Product Promise
+
+repoctx gives agents the context they need before they touch code.
+
+It does not replace human judgment.
+
+It makes multi-repo agentic development safer, clearer, and easier to orchestrate.
