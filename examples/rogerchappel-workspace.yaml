@@ -83,23 +83,31 @@ repos:
       requires_branch: true
       requires_pr: true
       review_pack_required: true
-  agentic-oss-template:
-    path: ~/Developer/example/agentic-oss-template
-    remote: https://github.com/rogerchappel/agentic-oss-template.git
-    type: template
+  repoctx:
+    path: ~/Developer/example/repoctx
+    remote: https://github.com/rogerchappel/repoctx.git
+    type: oss-cli
     default_base: main
+    package_manager: npm
     commands:
-      release_check: bash scripts/validate-template.sh
+      install: npm ci
+      test: npm test
+      build: npm run build
+      typecheck: npm run typecheck
+      release_check: bash scripts/validate-repoctx.sh
     integrations:
       branchbrief: true
       taskbrief: true
-      crewcmd: false
+      crewcmd: true
       copilot: true
     risk:
       production_sensitive: false
+      forbidden_by_default:
+        - .env*
+        - secrets/**
       medium_risk_paths:
         - .github/workflows/**
-        - templates/**
+        - package.json
     agents:
       requires_branch: true
       requires_pr: true
