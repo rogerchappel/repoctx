@@ -1,0 +1,27 @@
+{
+  "version": "0.1",
+  "workspace": "fixture",
+  "repos": {
+    "branchbrief": {
+      "path": "~/Developer/my-opensource/branchbrief",
+      "remote": "https://github.com/rogerchappel/branchbrief.git",
+      "type": "oss-cli",
+      "default_base": "main",
+      "docs_url": "https://branchbrief.rogerchappel.com",
+      "package_manager": "npm",
+      "commands": {
+        "test": "npm test",
+        "build": "npm run build"
+      },
+      "risk": {
+        "production_sensitive": false,
+        "forbidden_by_default": [".env*", "secrets/**"]
+      },
+      "agents": {
+        "requires_branch": true,
+        "requires_pr": true,
+        "review_pack_required": true
+      }
+    }
+  }
+}
