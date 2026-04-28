@@ -999,7 +999,7 @@ It should include example entries for:
 - branchbrief
 - taskbrief
 - agentic-team-playbook
-- agentic-oss-template
+- repoctx
 - CrewCMD
 - product-videogen
 

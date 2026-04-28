@@ -1,13 +1,19 @@
 #!/usr/bin/env node
 
 import { access, mkdir, writeFile } from "node:fs/promises";
-import { dirname, resolve } from "node:path";
+import { dirname, join, resolve } from "node:path";
 import { pathToFileURL } from "node:url";
 
+import { inspectRepo } from "./inspect/inspectRepo";
+import { formatTable } from "./output/table";
 import type { RepoType, Workspace, WorkspaceRepo } from "./types";
 import { findWorkspaceFile } from "./workspace/findWorkspaceFile";
 import { loadWorkspace } from "./workspace/loadWorkspace";
 import { REPO_TYPES } from "./workspace/schema";
+import {
+  formatValidationMessages,
+  validateWorkspace,
+} from "./workspace/validateWorkspace";
 import { stringifyWorkspaceForCli, writeWorkspace } from "./workspace/writeWorkspace";
 
 export interface CliCommand {
@@ -41,12 +47,12 @@ export const COMMANDS: readonly CliCommand[] = [
   {
     name: "inspect",
     summary: "Inspect planned repository context before export.",
-    status: "todo",
+    status: "ready",
   },
   {
     name: "validate",
     summary: "Validate repoctx configuration and context inputs.",
-    status: "todo",
+    status: "ready",
   },
   {
     name: "export",
@@ -56,12 +62,12 @@ export const COMMANDS: readonly CliCommand[] = [
   {
     name: "doctor",
     summary: "Run environment and repository health checks.",
-    status: "todo",
+    status: "ready",
   },
   {
     name: "list",
     summary: "List configured repoctx entries.",
-    status: "todo",
+    status: "ready",
   },
   {
     name: "remove",
@@ -76,6 +82,14 @@ export const COMMANDS: readonly CliCommand[] = [
 ];
 
 const VERSION = "0.1.0";
+const DEFAULT_WORKSPACE_FILES = [
+  "workspace.yaml",
+  "workspace.yml",
+  "workspace.json",
+  "repoctx.yaml",
+  "repoctx.yml",
+  "repoctx.json",
+] as const;
 
 export function buildHelpText(): string {
   const commandWidth = Math.max(...COMMANDS.map((command) => command.name.length));
@@ -96,8 +110,9 @@ export function buildHelpText(): string {
     commands,
     "",
     "Options:",
-    "  -h, --help     Show help.",
-    "  -v, --version  Show version.",
+    "  -h, --help              Show help.",
+    "  -v, --version           Show version.",
+    "  --workspace <file>      Use a specific workspace file.",
   ].join("\n");
 }
 
@@ -141,6 +156,14 @@ export async function runCli(
         return await runUpdate(args, io);
       case "export":
         return await runExport(args, io);
+      case "validate":
+        return await runValidate(parseOptions(args), io);
+      case "inspect":
+        return await runInspect(parseOptions(args), io);
+      case "list":
+        return await runList(parseOptions(args), io);
+      case "doctor":
+        return await runDoctor(parseOptions(args), io);
       default:
         io.stdout.write(
           `repoctx ${command.name}: TODO placeholder. ${command.summary} No files were changed.\n`,
@@ -230,6 +253,50 @@ function buildCommandHelpText(command: CliCommand): string {
         "  --output <file>    Write output to a file instead of stdout.",
         "  --workspace <file> Workspace file to read.",
         "  -h, --help         Show help.",
+      ].join("\n");
+    case "inspect":
+      return [
+        "repoctx inspect <name>",
+        "",
+        command.summary,
+        "",
+        "Usage:",
+        "  repoctx inspect <name> [--workspace <file>]",
+        "",
+        ...commonOptions,
+      ].join("\n");
+    case "validate":
+      return [
+        "repoctx validate",
+        "",
+        command.summary,
+        "",
+        "Usage:",
+        "  repoctx validate [--workspace <file>]",
+        "",
+        ...commonOptions,
+      ].join("\n");
+    case "doctor":
+      return [
+        "repoctx doctor",
+        "",
+        command.summary,
+        "",
+        "Usage:",
+        "  repoctx doctor [--workspace <file>]",
+        "",
+        ...commonOptions,
+      ].join("\n");
+    case "list":
+      return [
+        "repoctx list",
+        "",
+        command.summary,
+        "",
+        "Usage:",
+        "  repoctx list [--workspace <file>] [--type <type>] [--tag <tag>]",
+        "",
+        ...commonOptions,
       ].join("\n");
     default:
       return [
@@ -349,16 +416,202 @@ async function runExport(args: string[], io: CliIO): Promise<number> {
   return 0;
 }
 
+async function runValidate(
+  options: ParsedOptions,
+  io: CliIO,
+): Promise<number> {
+  const workspaceFile = await resolveWorkspaceFile(options.getOne("workspace"), getCwd(io));
+  const workspace = await loadWorkspace(workspaceFile);
+  const result = await validateWorkspace(workspace, { workspaceFile });
+  const errors = result.issues.filter((issue) => issue.level === "error");
+  const warnings = result.issues.filter((issue) => issue.level === "warning");
+
+  io.stdout.write(`Workspace: ${workspaceFile}\n`);
+  io.stdout.write(`Repos: ${Object.keys(workspace.repos).length}\n`);
+
+  if (result.issues.length > 0) {
+    io.stdout.write(`${formatValidationMessages(result.issues)}\n`);
+  } else {
+    io.stdout.write("ok workspace is valid\n");
+  }
+
+  io.stdout.write(
+    `Summary: ${errors.length} error(s), ${warnings.length} warning(s)\n`,
+  );
+
+  return errors.length > 0 ? 1 : 0;
+}
+
+async function runInspect(
+  options: ParsedOptions,
+  io: CliIO,
+): Promise<number> {
+  const [name] = options.positionals;
+  if (!name || options.positionals.length > 1) {
+    throw new Error("Missing repo name. Usage: repoctx inspect <name>");
+  }
+
+  const workspaceFile = await resolveWorkspaceFile(options.getOne("workspace"), getCwd(io));
+  const workspace = await loadWorkspace(workspaceFile);
+
+  if (!workspace.repos[name]) {
+    throw new Error(`Unknown repo: ${name}`);
+  }
+
+  io.stdout.write(`${inspectRepo(workspace, name)}\n`);
+  return 0;
+}
+
+async function runList(options: ParsedOptions, io: CliIO): Promise<number> {
+  ensureNoPositionals(options, "list");
+  const workspaceFile = await resolveWorkspaceFile(options.getOne("workspace"), getCwd(io));
+  const workspace = await loadWorkspace(workspaceFile);
+  const rows = listRows(workspace, options);
+
+  if (rows.length === 0) {
+    io.stdout.write("No repos matched.\n");
+    return 0;
+  }
+
+  io.stdout.write(
+    formatTable(rows, [
+      { key: "name", header: "Name" },
+      { key: "type", header: "Type" },
+      { key: "tags", header: "Tags" },
+      { key: "path", header: "Path" },
+    ]),
+  );
+  return 0;
+}
+
+async function runDoctor(options: ParsedOptions, io: CliIO): Promise<number> {
+  ensureNoPositionals(options, "doctor");
+  const cwd = getCwd(io);
+  const checks: Array<{ status: "ok" | "warn" | "error"; message: string }> = [];
+
+  checks.push({
+    status: "ok",
+    message: `node ${process.versions.node}`,
+  });
+
+  checks.push(
+    (await pathExists(join(cwd, "package.json")))
+      ? { status: "ok", message: "package.json found" }
+      : { status: "error", message: "package.json missing in current directory" },
+  );
+
+  checks.push(
+    (await pathExists(join(cwd, "node_modules")))
+      ? { status: "ok", message: "dependencies installed" }
+      : { status: "warn", message: "node_modules missing; run npm ci" },
+  );
+
+  const workspaceFile = await findWorkspaceFile(options.getOne("workspace"), cwd);
+  if (!workspaceFile || !await pathExists(workspaceFile)) {
+    checks.push({
+      status: options.has("workspace") ? "error" : "warn",
+      message: options.has("workspace")
+        ? `workspace file not found: ${options.getOne("workspace")}`
+        : `workspace file not found; checked ${DEFAULT_WORKSPACE_FILES.join(", ")}`,
+    });
+  } else {
+    checks.push({ status: "ok", message: `workspace file found: ${workspaceFile}` });
+
+    try {
+      const workspace = await loadWorkspace(workspaceFile);
+      const result = await validateWorkspace(workspace, { workspaceFile });
+      const errors = result.issues.filter((issue) => issue.level === "error");
+      const warnings = result.issues.filter((issue) => issue.level === "warning");
+
+      checks.push(
+        errors.length === 0
+          ? {
+              status: warnings.length > 0 ? "warn" : "ok",
+              message: `workspace validation: ${errors.length} error(s), ${warnings.length} warning(s)`,
+            }
+          : {
+              status: "error",
+              message: `workspace validation: ${errors.length} error(s), ${warnings.length} warning(s)`,
+            },
+      );
+    } catch (error) {
+      checks.push({
+        status: "error",
+        message: `workspace could not be loaded: ${formatError(error)}`,
+      });
+    }
+  }
+
+  const errors = checks.filter((check) => check.status === "error");
+  const warnings = checks.filter((check) => check.status === "warn");
+
+  io.stdout.write("repoctx doctor\n");
+  for (const check of checks) {
+    io.stdout.write(`${formatCheckStatus(check.status)} ${check.message}\n`);
+  }
+
+  io.stdout.write(
+    `Summary: ${errors.length} error(s), ${warnings.length} warning(s)\n`,
+  );
+
+  if (errors.length > 0 || warnings.length > 0) {
+    io.stdout.write("Next actions:\n");
+    if (errors.length > 0) {
+      io.stdout.write("- Fix error checks before relying on workspace context.\n");
+    }
+    if (warnings.length > 0) {
+      io.stdout.write("- Review warning checks to improve generated context.\n");
+    }
+  } else {
+    io.stdout.write("Next actions: none\n");
+  }
+
+  return errors.length > 0 ? 1 : 0;
+}
+
+function listRows(workspace: Workspace, options: ParsedOptions) {
+  const type = options.getOne("type");
+  const tag = options.getOne("tag");
+
+  return Object.entries(workspace.repos)
+    .filter(([, repo]) => !type || repo.type === type)
+    .filter(([, repo]) => !tag || repo.tags?.includes(tag))
+    .sort(([left], [right]) => left.localeCompare(right))
+    .map(([name, repo]) => ({
+      name,
+      type: repo.type ?? "",
+      tags: repo.tags?.join(", ") ?? "",
+      path: repo.path,
+    }));
+}
+
 async function readExistingWorkspace(
   explicitPath?: string,
   cwd = process.cwd(),
 ): Promise<{ filePath: string; workspace: Workspace }> {
-  const filePath = await findWorkspaceFile(explicitPath, cwd);
+  const filePath = await resolveWorkspaceFile(explicitPath, cwd);
+  return { filePath, workspace: await loadWorkspace(filePath) };
+}
+
+async function resolveWorkspaceFile(
+  explicitPath?: string,
+  cwd = process.cwd(),
+): Promise<string> {
+  if (explicitPath) {
+    const filePath = resolve(cwd, explicitPath);
+    if (await pathExists(filePath)) {
+      return filePath;
+    }
+
+    throw new Error(`Workspace file not found: ${filePath}`);
+  }
+
+  const filePath = await findWorkspaceFile(undefined, cwd);
   if (!filePath) {
     throw new Error("Workspace file not found. Use --workspace <file> or run repoctx init.");
   }
 
-  return { filePath, workspace: await loadWorkspace(filePath) };
+  return filePath;
 }
 
 function createEmptyWorkspace(): Workspace {
@@ -482,8 +735,13 @@ function parseOptions(args: string[]): ParsedOptions {
       continue;
     }
 
-    const name = arg.slice(2);
+    const equalsIndex = arg.indexOf("=");
+    const name = equalsIndex === -1 ? arg.slice(2) : arg.slice(2, equalsIndex);
     if (BOOLEAN_FLAGS.has(name)) {
+      if (equalsIndex !== -1) {
+        throw new Error(`Option --${name} does not accept a value.`);
+      }
+
       options.addFlag(name, "true");
       continue;
     }
@@ -492,13 +750,15 @@ function parseOptions(args: string[]): ParsedOptions {
       throw new Error(`Unknown option: --${name}`);
     }
 
-    const value = args[index + 1];
+    const value = equalsIndex === -1 ? args[index + 1] : arg.slice(equalsIndex + 1);
     if (!value || value.startsWith("--")) {
       throw new Error(`Option --${name} requires a value.`);
     }
 
     options.addFlag(name, value);
-    index += 1;
+    if (equalsIndex === -1) {
+      index += 1;
+    }
   }
 
   return options;
@@ -510,6 +770,17 @@ async function pathExists(filePath: string): Promise<boolean> {
     return true;
   } catch {
     return false;
+  }
+}
+
+function formatCheckStatus(status: "ok" | "warn" | "error"): string {
+  switch (status) {
+    case "ok":
+      return "ok";
+    case "warn":
+      return "!";
+    case "error":
+      return "x";
   }
 }
 
