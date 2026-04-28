@@ -1,6 +1,6 @@
 import { execFile } from "node:child_process";
 import { promisify } from "node:util";
-import { getCurrentBranch } from "./getCurrentBranch.ts";
+import { getCurrentBranch } from "./getCurrentBranch";
 
 const execFileAsync = promisify(execFile);
 

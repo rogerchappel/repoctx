@@ -1,8 +1,8 @@
-import { findGitRepos } from "./findGitRepos.ts";
-import { getCurrentBranch } from "../git/getCurrentBranch.ts";
-import { getDefaultBranch } from "../git/getDefaultBranch.ts";
-import { getRemote } from "../git/getRemote.ts";
-import { getStatus, type GitStatus } from "../git/getStatus.ts";
+import { findGitRepos } from "./findGitRepos";
+import { getCurrentBranch } from "../git/getCurrentBranch";
+import { getDefaultBranch } from "../git/getDefaultBranch";
+import { getRemote } from "../git/getRemote";
+import { getStatus, type GitStatus } from "../git/getStatus";
 
 export interface ScannedRepo {
   path: string;
