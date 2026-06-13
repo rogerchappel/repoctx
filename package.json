@@ -15,7 +15,11 @@
     }
   },
   "files": [
-    "dist"
+    "dist",
+    "LICENSE",
+    "SECURITY.md",
+    "CHANGELOG.md",
+    "CONTRIBUTING.md"
   ],
   "scripts": {
     "build": "tsup",
@@ -38,5 +42,13 @@
     "tsup": "^8.0.2",
     "typescript": "^6.0.3",
     "vitest": "^4.1.5"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rogerchappel/repoctx.git"
+  },
+  "bugs": {
+    "url": "https://github.com/rogerchappel/repoctx/issues"
+  },
+  "homepage": "https://github.com/rogerchappel/repoctx#readme"
 }
