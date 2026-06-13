@@ -15,7 +15,11 @@
     }
   },
   "files": [
-    "dist"
+    "dist",
+    "LICENSE",
+    "SECURITY.md",
+    "CHANGELOG.md",
+    "CONTRIBUTING.md"
   ],
   "scripts": {
     "build": "tsup",
