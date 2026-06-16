@@ -44,6 +44,11 @@ See [docs/PRD.md](docs/PRD.md) for the full product definition.
 If you are working on the TypeScript source, install dependencies and run the
 project's local checks before opening a PR.
 
+```sh
+npm install
+npm run release:check
+```
+
 The repository also contains local validation helpers and workflow docs for the
 agent-oriented operating model.
 
