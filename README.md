@@ -39,6 +39,19 @@ node dist/cli.js --help
 
 See [docs/PRD.md](docs/PRD.md) for the full product definition.
 
+## Demo
+
+Run the local workspace map demo to create two disposable repositories, scan
+them, and inspect the generated workspace file:
+
+```sh
+bash demo/run-local-workspace-map.sh
+```
+
+See [docs/tutorials/local-workspace-map.md](docs/tutorials/local-workspace-map.md)
+for the walkthrough and [docs/promo/social-hooks.md](docs/promo/social-hooks.md)
+for grounded promotion drafts.
+
 ## Development
 
 If you are working on the TypeScript source, install dependencies and run the
