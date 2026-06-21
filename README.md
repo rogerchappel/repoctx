@@ -37,6 +37,17 @@ Today you can inspect the scaffolded CLI help locally:
 node dist/cli.js --help
 ```
 
+Run the committed example workspace demo:
+
+```sh
+npm ci
+bash demo/run-example-workspace.sh
+```
+
+The demo builds the CLI, lists the placeholder workspace, inspects the
+`branchbrief` entry, and exports the workspace as JSON. A short promotion brief
+for video or social drafting lives in [docs/promo/video-brief.md](docs/promo/video-brief.md).
+
 See [docs/PRD.md](docs/PRD.md) for the full product definition.
 
 ## Demo
