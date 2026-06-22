@@ -27,6 +27,13 @@ Run it:
 bash demo/run-local-workspace-map.sh
 ```
 
+Shorter handoff clip:
+
+```sh
+npm run build
+bash demo/run-agent-context-brief.sh
+```
+
 ## Thread outline
 
 1. Problem: agents and scripts often rediscover the same repo facts on every
