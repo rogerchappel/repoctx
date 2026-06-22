@@ -63,6 +63,16 @@ See [docs/tutorials/local-workspace-map.md](docs/tutorials/local-workspace-map.m
 for the walkthrough and [docs/promo/social-hooks.md](docs/promo/social-hooks.md)
 for grounded promotion drafts.
 
+For a shorter handoff clip using the committed example workspace:
+
+```sh
+npm run build
+bash demo/run-agent-context-brief.sh
+```
+
+That script lists `examples/workspace.yaml`, inspects the `branchbrief` entry,
+and checks that review-pack and forbidden-path boundaries appear in the brief.
+
 ## Development
 
 If you are working on the TypeScript source, install dependencies and run the
