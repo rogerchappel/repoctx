@@ -39,6 +39,24 @@ node dist/cli.js --help
 
 See [docs/PRD.md](docs/PRD.md) for the full product definition.
 
+## Runnable demo
+
+Build the CLI, then run a temporary local workspace map flow:
+
+```sh
+npm run build
+bash examples/local-workspace-demo.sh
+```
+
+The demo initializes a workspace file, adds this repository as an `oss-cli`,
+lists and inspects it, validates the workspace, and exports JSON.
+
+## Demo and Promotion
+
+- [Local workspace map demo](docs/tutorials/local-workspace-map.md)
+- [Video brief](docs/promo/video-brief.md)
+- [Social hooks](docs/promo/social-hooks.md)
+
 ## Development
 
 If you are working on the TypeScript source, install dependencies and run the
