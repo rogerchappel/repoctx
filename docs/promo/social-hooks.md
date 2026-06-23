@@ -14,6 +14,10 @@ the committed script and avoid implying broad production adoption.
    the local facts first."
 5. Local-first agent tooling should make repository context visible before it
    starts changing files.
+6. `repoctx` gives agents a local workspace map: repo paths, types, tags,
+   defaults, and exports that downstream tools can consume.
+7. Before an agent edits a multi-repo workspace, give it the map. `repoctx`
+   turns local repo context into reviewable YAML or JSON.
 
 ## Demo caption
 
@@ -32,6 +36,13 @@ Shorter handoff clip:
 ```sh
 npm run build
 bash demo/run-agent-context-brief.sh
+```
+
+Current checkout demo:
+
+```sh
+npm run build
+bash examples/local-workspace-demo.sh
 ```
 
 ## Thread outline

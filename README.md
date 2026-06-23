@@ -50,7 +50,17 @@ for video or social drafting lives in [docs/promo/video-brief.md](docs/promo/vid
 
 See [docs/PRD.md](docs/PRD.md) for the full product definition.
 
-## Demo
+## Runnable demo
+
+Build the CLI, then run a temporary local workspace map flow:
+
+```sh
+npm run build
+bash examples/local-workspace-demo.sh
+```
+
+The demo initializes a workspace file, adds this repository as an `oss-cli`,
+lists and inspects it, validates the workspace, and exports JSON.
 
 Run the local workspace map demo to create two disposable repositories, scan
 them, and inspect the generated workspace file:
@@ -72,6 +82,12 @@ bash demo/run-agent-context-brief.sh
 
 That script lists `examples/workspace.yaml`, inspects the `branchbrief` entry,
 and checks that review-pack and forbidden-path boundaries appear in the brief.
+
+## Demo and Promotion
+
+- [Local workspace map demo](docs/tutorials/local-workspace-map.md)
+- [Video brief](docs/promo/video-brief.md)
+- [Social hooks](docs/promo/social-hooks.md)
 
 ## Development
 
