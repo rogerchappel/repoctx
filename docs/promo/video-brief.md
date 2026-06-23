@@ -1,18 +1,33 @@
-# Video Brief: Give Agents a Local Workspace Map
+# repoctx Video Brief
 
-## Viewer
+## Promise
 
-Developers who run agents across several local repositories and want an explicit map of paths, repo types, tags, and defaults.
+Show how `repoctx` turns a set of local repository facts into a reusable
+workspace map that agents and developer tools can inspect before acting.
 
-## Demo arc
+## Demo flow
 
-1. Start with the cost of rediscovering repo context in every session.
-2. Run `npm run build`.
-3. Run `bash examples/local-workspace-demo.sh`.
-4. Show the generated `workspace.yaml` flow: init, add, list, inspect, validate, export JSON.
-5. Close on the local-first boundary: the demo only reads local files and writes temporary outputs.
+```sh
+npm ci
+bash demo/run-example-workspace.sh
+```
 
-## On-screen commands
+The script builds the local CLI, lists the placeholder workspace, inspects the
+`branchbrief` entry, and exports the same workspace as JSON.
+
+## Grounded talking points
+
+- `repoctx` keeps workspace context in explicit files instead of relying on each
+  agent to rediscover repo paths, commands, docs, and risk notes.
+- The committed examples use placeholder paths so they are safe for public docs.
+- The CLI supports YAML and JSON output for downstream tools.
+- Validation may warn on placeholder paths when users point it at public example
+  files; private workspace files should use real local paths.
+
+## Current Checkout Demo
+
+Use this shorter arc when the viewer should see the `init`, `add`, `list`,
+`inspect`, `validate`, and JSON export flow against one local checkout:
 
 ```sh
 npm run build
@@ -23,5 +38,5 @@ node dist/cli.js export --workspace /tmp/workspace.yaml --format json
 ## Honest limitations
 
 - `repoctx` maps local workspace facts; it does not run package checks or mutate repos.
-- The demo adds one repo entry. Larger workspaces should tag entries consistently so agents can filter them.
+- Larger workspaces should tag entries consistently so agents can filter them.
 - The project is still early and the full command set is evolving.

@@ -37,6 +37,17 @@ Today you can inspect the scaffolded CLI help locally:
 node dist/cli.js --help
 ```
 
+Run the committed example workspace demo:
+
+```sh
+npm ci
+bash demo/run-example-workspace.sh
+```
+
+The demo builds the CLI, lists the placeholder workspace, inspects the
+`branchbrief` entry, and exports the workspace as JSON. A short promotion brief
+for video or social drafting lives in [docs/promo/video-brief.md](docs/promo/video-brief.md).
+
 See [docs/PRD.md](docs/PRD.md) for the full product definition.
 
 ## Runnable demo
@@ -51,6 +62,27 @@ bash examples/local-workspace-demo.sh
 The demo initializes a workspace file, adds this repository as an `oss-cli`,
 lists and inspects it, validates the workspace, and exports JSON.
 
+Run the local workspace map demo to create two disposable repositories, scan
+them, and inspect the generated workspace file:
+
+```sh
+bash demo/run-local-workspace-map.sh
+```
+
+See [docs/tutorials/local-workspace-map.md](docs/tutorials/local-workspace-map.md)
+for the walkthrough and [docs/promo/social-hooks.md](docs/promo/social-hooks.md)
+for grounded promotion drafts.
+
+For a shorter handoff clip using the committed example workspace:
+
+```sh
+npm run build
+bash demo/run-agent-context-brief.sh
+```
+
+That script lists `examples/workspace.yaml`, inspects the `branchbrief` entry,
+and checks that review-pack and forbidden-path boundaries appear in the brief.
+
 ## Demo and Promotion
 
 - [Local workspace map demo](docs/tutorials/local-workspace-map.md)
@@ -61,6 +93,11 @@ lists and inspects it, validates the workspace, and exports JSON.
 
 If you are working on the TypeScript source, install dependencies and run the
 project's local checks before opening a PR.
+
+```sh
+npm install
+npm run release:check
+```
 
 The repository also contains local validation helpers and workflow docs for the
 agent-oriented operating model.
