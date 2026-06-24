@@ -37,6 +37,15 @@ Today you can inspect the scaffolded CLI help locally:
 node dist/cli.js --help
 ```
 
+You can also run a fixture-backed scan demo:
+
+```sh
+bash demo/workspace-map.sh
+```
+
+The demo creates two temporary Git repositories, scans them, and writes YAML and
+JSON workspace maps under `/tmp/repoctx-demo` or `$TMPDIR/repoctx-demo`.
+
 See [docs/PRD.md](docs/PRD.md) for the full product definition.
 
 ## Development
