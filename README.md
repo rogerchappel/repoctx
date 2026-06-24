@@ -37,6 +37,21 @@ Today you can inspect the scaffolded CLI help locally:
 node dist/cli.js --help
 ```
 
+## Demo
+
+Run the local workspace inventory demo to scan two temporary Git repositories,
+write a workspace file, validate it, list entries, and inspect one repo:
+
+```sh
+npm install
+bash demo/local-workspace-inventory.sh
+```
+
+See [Local Workspace Inventory Demo](docs/tutorials/local-workspace-inventory.md)
+for the walkthrough and
+[video brief](docs/promo/local-workspace-inventory-video-brief.md) for a short
+promotion script grounded in the same commands.
+
 You can also run a fixture-backed scan demo:
 
 ```sh
