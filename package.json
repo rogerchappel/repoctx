@@ -23,15 +23,17 @@
     "LICENSE",
     "SECURITY.md",
     "CHANGELOG.md",
-    "CONTRIBUTING.md"
+    "CONTRIBUTING.md",
+    "CODE_OF_CONDUCT.md"
   ],
   "scripts": {
     "build": "tsup && tsc -p tsconfig.build.json",
     "check": "npm run typecheck",
+    "smoke": "bash scripts/smoke.sh",
     "test": "vitest run",
     "typecheck": "tsc --noEmit",
     "package:smoke": "npm pack --dry-run",
-    "release:check": "npm run check && npm test && npm run build && npm run package:smoke"
+    "release:check": "npm run check && npm test && npm run build && npm run smoke && npm run package:smoke"
   },
   "keywords": [
     "repoctx",
