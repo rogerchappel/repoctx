@@ -39,6 +39,19 @@ node dist/cli.js --help
 
 See [docs/PRD.md](docs/PRD.md) for the full product definition.
 
+## Demo
+
+Run the example workspace handoff:
+
+```sh
+bash demo/run-workspace-handoff.sh
+```
+
+The script validates `examples/workspace.yaml`, lists the repos, inspects the
+`branchbrief` entry, and exports JSON into `.repoctx-demo/`. See
+[Workspace Handoff Demo](docs/tutorials/workspace-handoff.md) for the manual
+commands and expected outputs.
+
 ## Development
 
 If you are working on the TypeScript source, install dependencies and run the
