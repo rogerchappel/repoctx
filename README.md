@@ -107,6 +107,16 @@ bash demo/run-agent-context-brief.sh
 That script lists `examples/workspace.yaml`, inspects the `branchbrief` entry,
 and checks that review-pack and forbidden-path boundaries appear in the brief.
 
+To export the same public fixture as machine-readable context and a handoff
+brief:
+
+```sh
+bash demo/run-agent-handoff-export.sh
+```
+
+See [docs/tutorials/agent-handoff-export.md](docs/tutorials/agent-handoff-export.md)
+and [docs/promo/agent-handoff-export-social-hooks.md](docs/promo/agent-handoff-export-social-hooks.md).
+
 ## Demo and Promotion
 
 - [Local workspace map demo](docs/tutorials/local-workspace-map.md)
