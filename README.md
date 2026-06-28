@@ -74,6 +74,19 @@ for video or social drafting lives in [docs/promo/video-brief.md](docs/promo/vid
 
 See [docs/PRD.md](docs/PRD.md) for the full product definition.
 
+## Workspace Handoff Demo
+
+Run the example workspace handoff:
+
+```sh
+bash demo/run-workspace-handoff.sh
+```
+
+The script validates `examples/workspace.yaml`, lists the repos, inspects the
+`branchbrief` entry, and exports JSON into `.repoctx-demo/`. See
+[Workspace Handoff Demo](docs/tutorials/workspace-handoff.md) for the manual
+commands and expected outputs.
+
 ## Runnable demo
 
 Build the CLI, then run a temporary local workspace map flow:
