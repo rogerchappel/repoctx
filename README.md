@@ -37,6 +37,23 @@ Today you can inspect the scaffolded CLI help locally:
 node dist/cli.js --help
 ```
 
+## Demo recipe
+
+Use the checked-in placeholder workspace to see the current list, inspect, and
+export flows without scanning private machine state:
+
+```sh
+npm install
+npm run build
+bash demo/example-workspace-review.sh
+```
+
+The script writes a JSON export, a table-style repo list, and an inspection
+report for the `branchbrief` example entry into a temporary directory. Promotion
+drafts for this workflow live in
+[`docs/promo/social-hooks.md`](docs/promo/social-hooks.md) and
+[`docs/promo/video-brief.md`](docs/promo/video-brief.md).
+
 See [docs/PRD.md](docs/PRD.md) for the full product definition.
 
 ## Development
