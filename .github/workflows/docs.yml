@@ -45,12 +45,25 @@ jobs:
             test -s "$file"
           done < markdown-files.txt
 
-      - name: Print docs customization TODO
+      - name: Validate docs package surface
         run: |
           set -euo pipefail
 
-          if [ -f package.json ]; then
-            echo "Add docs build verification here when the repository has a docs toolchain."
-          else
-            echo "No package.json found; docs workflow is limited to markdown hygiene."
-          fi
+          node <<'NODE'
+          const fs = require('node:fs');
+          const pkg = JSON.parse(fs.readFileSync('package.json', 'utf8'));
+          const files = new Set(pkg.files || []);
+          const scripts = pkg.scripts || {};
+
+          for (const required of ['docs', 'README.md', 'CHANGELOG.md']) {
+            if (!files.has(required)) {
+              throw new Error(`package files allowlist is missing ${required}`);
+            }
+          }
+
+          for (const script of ['package:smoke', 'release:check']) {
+            if (!scripts[script]) {
+              throw new Error(`package.json is missing scripts.${script}`);
+            }
+          }
+          NODE

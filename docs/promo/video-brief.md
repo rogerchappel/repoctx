@@ -1,23 +1,42 @@
-# Short Video Brief: Example Workspace Review
+# repoctx Video Brief
 
-## Goal
+## Promise
 
-Show how repoctx turns a workspace file into a reviewable map for agentic development.
+Show how `repoctx` turns a set of local repository facts into a reusable
+workspace map that agents and developer tools can inspect before acting.
 
-## Grounded Demo Path
+## Demo flow
 
-1. Open `examples/workspace.yaml` and point out the two placeholder repos, command fields, tags, integrations, and risk settings.
-2. Run `npm run build`.
-3. Run `bash demo/example-workspace-review.sh`.
-4. Open the generated list report and inspect report from `/tmp/repoctx-example-workspace`.
-5. Explain how the JSON export can feed downstream tools without exposing private paths in public examples.
+```sh
+npm ci
+bash demo/run-example-workspace.sh
+```
 
-## Talking Points
+The script builds the local CLI, lists the placeholder workspace, inspects the
+`branchbrief` entry, and exports the same workspace as JSON.
 
-- The public examples use placeholders on purpose.
-- The CLI can list, inspect, validate, scan, and export workspace context.
-- repoctx is useful before agent work because it names verification commands and risk defaults up front.
+## Grounded talking points
 
-## Honest Limits
+- `repoctx` keeps workspace context in explicit files instead of relying on each
+  agent to rediscover repo paths, commands, docs, and risk notes.
+- The committed examples use placeholder paths so they are safe for public docs.
+- The CLI supports YAML and JSON output for downstream tools.
+- Validation may warn on placeholder paths when users point it at public example
+  files; private workspace files should use real local paths.
 
-repoctx does not make local paths public-safe by itself. Private workspace files still need normal secret and path hygiene before sharing.
+## Current Checkout Demo
+
+Use this shorter arc when the viewer should see the `init`, `add`, `list`,
+`inspect`, `validate`, and JSON export flow against one local checkout:
+
+```sh
+npm run build
+bash examples/local-workspace-demo.sh
+node dist/cli.js export --workspace /tmp/workspace.yaml --format json
+```
+
+## Honest limitations
+
+- `repoctx` maps local workspace facts; it does not run package checks or mutate repos.
+- Larger workspaces should tag entries consistently so agents can filter them.
+- The project is still early and the full command set is evolving.
