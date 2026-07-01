@@ -45,7 +45,7 @@ jobs:
             test -s "$file"
           done < markdown-files.txt
 
-      - name: Print docs customization TODO
+      - name: Print docs customization note
         run: |
           set -euo pipefail
 

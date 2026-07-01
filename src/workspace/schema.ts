@@ -160,7 +160,7 @@ function isNonEmptyString(value: unknown): value is string {
   return typeof value === "string" && value.trim().length > 0;
 }
 
-// TODO: Replace this lightweight validator with a zod schema when the package
+// Future: replace this lightweight validator with a zod schema when the package
 // scaffold declares zod. The PRD recommends zod, but origin/main currently has
 // no dependency manifest to extend.
 export const workspaceSchema = {
