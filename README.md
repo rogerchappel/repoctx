@@ -31,9 +31,27 @@ This repository is actively taking shape. The current tree already includes a
 placeholder CLI, compiled build output, and repository-scanning modules, but the
 full command set is not finished yet.
 
-Today you can inspect the scaffolded CLI help locally:
+## Installation
+
+Install the published CLI from npm:
 
 ```sh
+npm install -g repoctx
+repoctx --help
+```
+
+You can also run it without a global install:
+
+```sh
+npx repoctx --help
+```
+
+When working from a source checkout, build first and then inspect the compiled
+CLI help:
+
+```sh
+npm install
+npm run build
 node dist/cli.js --help
 ```
 
