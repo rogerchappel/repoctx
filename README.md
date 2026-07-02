@@ -37,6 +37,16 @@ Today you can inspect the scaffolded CLI help locally:
 node dist/cli.js --help
 ```
 
+Run a short workspace-map demo:
+
+```sh
+bash demo/run-workspace-map-demo.sh
+```
+
+The demo uses the checked-in placeholder workspace to list repository entries
+and export agent-readable JSON. See
+[Workspace Map Demo](docs/tutorials/workspace-map-demo.md).
+
 See [docs/PRD.md](docs/PRD.md) for the full product definition.
 
 ## Development
