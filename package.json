@@ -16,6 +16,7 @@
   },
   "files": [
     "dist",
+    "demo",
     "docs",
     "examples",
     "templates",
@@ -24,7 +25,8 @@
     "SECURITY.md",
     "CHANGELOG.md",
     "CONTRIBUTING.md",
-    "CODE_OF_CONDUCT.md"
+    "CODE_OF_CONDUCT.md",
+    "ROADMAP.md"
   ],
   "scripts": {
     "build": "tsup && tsc -p tsconfig.build.json",
@@ -32,7 +34,7 @@
     "smoke": "bash scripts/smoke.sh",
     "test": "vitest run",
     "typecheck": "tsc --noEmit",
-    "package:smoke": "npm pack --dry-run",
+    "package:smoke": "bash scripts/package-smoke.sh",
     "release:check": "npm run check && npm test && npm run build && npm run smoke && npm run package:smoke"
   },
   "keywords": [
