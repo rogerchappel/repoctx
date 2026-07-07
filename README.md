@@ -37,6 +37,16 @@ Today you can inspect the scaffolded CLI help locally:
 node dist/cli.js --help
 ```
 
+For a runnable workspace-map demo that initializes, validates, lists, inspects,
+and exports a temporary workspace, run:
+
+```sh
+bash demo/workspace-map-demo.sh
+```
+
+See [Workspace Map Demo](docs/tutorials/workspace-map-demo.md) for the command
+sequence and generated files.
+
 See [docs/PRD.md](docs/PRD.md) for the full product definition.
 
 ## Development
