@@ -55,6 +55,20 @@ npm run build
 node dist/cli.js --help
 ```
 
+## Runnable Demo
+
+The local scan demo creates two temporary Git repositories, scans them, and
+checks that the generated workspace JSON contains both entries:
+
+```sh
+npm run build
+bash examples/local-scan-demo.sh
+```
+
+See [Local workspace scan demo](docs/tutorials/local-workspace-scan.md) for the
+walkthrough and [video brief](docs/promo/local-scan-video-brief.md) for a
+promotion-safe beat sheet.
+
 For a runnable workspace-map demo that initializes, validates, lists, inspects,
 and exports a temporary workspace, run:
 
