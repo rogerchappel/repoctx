@@ -37,6 +37,20 @@ Today you can inspect the scaffolded CLI help locally:
 node dist/cli.js --help
 ```
 
+## Runnable Demo
+
+The local scan demo creates two temporary Git repositories, scans them, and
+checks that the generated workspace JSON contains both entries:
+
+```sh
+npm run build
+bash examples/local-scan-demo.sh
+```
+
+See [Local workspace scan demo](docs/tutorials/local-workspace-scan.md) for the
+walkthrough and [video brief](docs/promo/local-scan-video-brief.md) for a
+promotion-safe beat sheet.
+
 See [docs/PRD.md](docs/PRD.md) for the full product definition.
 
 ## Development
