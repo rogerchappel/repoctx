@@ -64,3 +64,15 @@ repos:
 ## Validation expectations
 
 Committed examples use placeholder paths, so runtime path validation may report them as missing. That is expected for public examples. A future validator may support an example mode that skips local path existence checks.
+
+## Runnable demo
+
+Use the workspace-map demo when you want a short, recording-friendly CLI path
+that does not require real private checkout paths:
+
+```sh
+bash demo/run-workspace-map-demo.sh
+```
+
+The demo lists `examples/workspace.yaml`, exports it as JSON, and verifies the
+exported repository count.

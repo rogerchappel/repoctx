@@ -19,6 +19,7 @@ format and uses semantic versioning when versioned releases are published.
 
 ### Changed
 
+- Replaced the docs workflow placeholder with a concrete package/docs surface check.
 - Aligned README and docs with the current implemented package scaffold and
   planned V1 command behavior.
 - Quarantined inherited scaffold material so repoctx is presented as a
