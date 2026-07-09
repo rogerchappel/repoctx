@@ -124,6 +124,16 @@ The demo builds the CLI, lists the placeholder workspace, inspects the
 `branchbrief` entry, and exports the workspace as JSON. A short promotion brief
 for video or social drafting lives in [docs/promo/video-brief.md](docs/promo/video-brief.md).
 
+Run a verification-command inventory demo:
+
+```sh
+bash demo/verification-command-inventory.sh
+```
+
+The demo scans npm and pnpm fixture repositories, validates the generated
+workspace, and checks the detected command inventory. See
+[docs/tutorials/verification-command-inventory.md](docs/tutorials/verification-command-inventory.md).
+
 See [docs/PRD.md](docs/PRD.md) for the full product definition.
 
 ## Workspace Handoff Demo
