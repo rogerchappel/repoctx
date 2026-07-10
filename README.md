@@ -133,6 +133,10 @@ bash demo/verification-command-inventory.sh
 The demo scans npm and pnpm fixture repositories, validates the generated
 workspace, and checks the detected command inventory. See
 [docs/tutorials/verification-command-inventory.md](docs/tutorials/verification-command-inventory.md).
+Promotion-ready hooks and a short video outline live in
+[docs/promo/verification-command-inventory-hooks.md](docs/promo/verification-command-inventory-hooks.md)
+and
+[docs/promo/verification-command-inventory-video-brief.md](docs/promo/verification-command-inventory-video-brief.md).
 
 See [docs/PRD.md](docs/PRD.md) for the full product definition.
 
