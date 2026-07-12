@@ -185,6 +185,8 @@ bash demo/run-agent-context-brief.sh
 
 That script lists `examples/workspace.yaml`, inspects the `branchbrief` entry,
 and checks that review-pack and forbidden-path boundaries appear in the brief.
+Promotion hooks for the same clip live in
+[docs/promo/agent-context-brief-hooks.md](docs/promo/agent-context-brief-hooks.md).
 
 To export the same public fixture as machine-readable context and a handoff
 brief:
