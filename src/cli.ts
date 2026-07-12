@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 
+import { readFileSync } from "node:fs";
 import { access, mkdir, writeFile } from "node:fs/promises";
 import { dirname, extname, join, resolve } from "node:path";
 import { pathToFileURL } from "node:url";
@@ -59,7 +60,12 @@ export const COMMANDS: readonly CliCommand[] = [
   { name: "update", summary: "Update fields on a repository entry.", status: "ready" },
 ];
 
-const VERSION = "0.1.0";
+function packageVersion(): string {
+  const packageJson = JSON.parse(readFileSync(new URL("../package.json", import.meta.url), "utf8")) as {
+    version?: string;
+  };
+  return packageJson.version ?? "0.0.0";
+}
 const DEFAULT_WORKSPACE_FILE = "workspace.yaml";
 const DEFAULT_WORKSPACE_FILES = ["workspace.yaml", "repoctx.yaml", "repos.yaml"] as const;
 
@@ -102,7 +108,7 @@ export async function runCli(
   }
 
   if (commandName === "--version" || commandName === "-v") {
-    io.stdout.write(`${VERSION}\n`);
+    io.stdout.write(`${packageVersion()}\n`);
     return 0;
   }
 

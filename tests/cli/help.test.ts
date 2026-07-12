@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 
+import packageJson from "../../package.json";
 import { COMMANDS, buildHelpText, runCli } from "../../src/cli.js";
 
 function createIo() {
@@ -45,6 +46,16 @@ describe("repoctx help", () => {
 
     expect(exitCode).toBe(0);
     expect(output().stdout).toContain("repoctx <command>");
+    expect(output().stderr).toBe("");
+  });
+
+  it("prints the package version", async () => {
+    const { io, output } = createIo();
+
+    const exitCode = await runCli(["--version"], io);
+
+    expect(exitCode).toBe(0);
+    expect(output().stdout).toBe(`${packageJson.version}\n`);
     expect(output().stderr).toBe("");
   });
 });
