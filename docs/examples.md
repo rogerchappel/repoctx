@@ -7,6 +7,21 @@ The `examples/` directory contains safe, placeholder workspace files. They are e
 - `examples/workspace.yaml`: compact YAML workspace with representative fields.
 - `examples/workspace.json`: JSON version for tools that prefer machine-readable input.
 - `examples/rogerchappel-workspace.yaml`: larger example with the repos named in the PRD.
+- `examples/agent-workspace-demo.sh`: runnable list, inspect, and JSON export
+  demo using the placeholder workspace.
+
+## Runnable workspace demo
+
+Build the local CLI and run the example workspace through the agent-facing
+commands:
+
+```bash
+npm run build
+bash examples/agent-workspace-demo.sh
+```
+
+The script writes a repo list, an inspected `branchbrief` entry, and an exported
+JSON workspace to a temporary directory.
 
 ## Placeholder paths
 
