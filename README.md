@@ -124,6 +124,18 @@ The demo builds the CLI, lists the placeholder workspace, inspects the
 `branchbrief` entry, and exports the workspace as JSON. A short promotion brief
 for video or social drafting lives in [docs/promo/video-brief.md](docs/promo/video-brief.md).
 
+Run a release-readiness handoff demo against the same example workspace:
+
+```sh
+bash demo/release-readiness-handoff.sh
+```
+
+The demo lists the workspace, inspects the release-sensitive sample repo, and
+exports JSON with risk and human-approval metadata. See
+[docs/tutorials/release-readiness-handoff.md](docs/tutorials/release-readiness-handoff.md)
+and
+[docs/promo/release-readiness-handoff-hooks.md](docs/promo/release-readiness-handoff-hooks.md).
+
 Run a verification-command inventory demo:
 
 ```sh
