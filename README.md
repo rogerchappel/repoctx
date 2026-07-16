@@ -69,6 +69,16 @@ See [Local workspace scan demo](docs/tutorials/local-workspace-scan.md) for the
 walkthrough and [video brief](docs/promo/local-scan-video-brief.md) for a
 promotion-safe beat sheet.
 
+To show command inventory and review policy from the checked-in workspace
+fixture, run:
+
+```sh
+bash examples/verification-inventory-demo.sh
+```
+
+See [Verification Inventory Demo](docs/tutorials/verification-inventory-demo.md)
+and [Verification Inventory Social Pack](docs/promo/verification-inventory-social-pack.md).
+
 For a runnable workspace-map demo that initializes, validates, lists, inspects,
 and exports a temporary workspace, run:
 
