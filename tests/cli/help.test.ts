@@ -1,7 +1,13 @@
+import { symlinkSync } from "node:fs";
+import { mkdtemp, realpath } from "node:fs/promises";
+import { tmpdir } from "node:os";
+import { join, resolve } from "node:path";
+import { pathToFileURL } from "node:url";
+
 import { describe, expect, it } from "vitest";
 
 import packageJson from "../../package.json";
-import { COMMANDS, buildHelpText, runCli } from "../../src/cli.js";
+import { COMMANDS, buildHelpText, isCliEntrypoint, runCli } from "../../src/cli.js";
 
 function createIo() {
   let stdout = "";
@@ -29,6 +35,17 @@ function createIo() {
 }
 
 describe("repoctx help", () => {
+  it("recognizes path aliases and symlinks as the CLI entrypoint", async () => {
+    const directory = await mkdtemp(join(tmpdir(), "repoctx-entrypoint-"));
+    const modulePath = resolve("src/cli.ts");
+    const moduleRealPath = await realpath(modulePath);
+    const symlinkPath = join(directory, "cli.ts");
+    symlinkSync(modulePath, symlinkPath);
+
+    expect(isCliEntrypoint(pathToFileURL(moduleRealPath).href, symlinkPath)).toBe(true);
+    expect(isCliEntrypoint(pathToFileURL(moduleRealPath).href, undefined)).toBe(false);
+  });
+
   it("lists every placeholder command", () => {
     const helpText = buildHelpText();
 

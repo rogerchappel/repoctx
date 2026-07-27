@@ -1,9 +1,9 @@
 #!/usr/bin/env node
 
-import { readFileSync } from "node:fs";
+import { readFileSync, realpathSync } from "node:fs";
 import { access, mkdir, writeFile } from "node:fs/promises";
 import { dirname, extname, join, resolve } from "node:path";
-import { pathToFileURL } from "node:url";
+import { fileURLToPath } from "node:url";
 
 import { inspectRepo } from "./inspect/inspectRepo";
 import { formatTable } from "./output/table";
@@ -764,11 +764,19 @@ function assertNever(value: never): never {
   throw new Error(`Unhandled command: ${String(value)}`);
 }
 
-const isEntrypoint = process.argv[1]
-  ? import.meta.url === pathToFileURL(process.argv[1]).href
-  : false;
+export function isCliEntrypoint(moduleUrl: string, invocationPath: string | undefined): boolean {
+  if (!invocationPath) {
+    return false;
+  }
 
-if (isEntrypoint) {
+  try {
+    return realpathSync(fileURLToPath(moduleUrl)) === realpathSync(invocationPath);
+  } catch {
+    return false;
+  }
+}
+
+if (isCliEntrypoint(import.meta.url, process.argv[1])) {
   Promise.resolve(runCli()).then(
     (exitCode) => {
       process.exitCode = exitCode;
