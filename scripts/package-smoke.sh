@@ -7,7 +7,7 @@ trap 'rm -rf "$tmp_dir"' EXIT
 
 cd "$repo_root"
 npm run build >/dev/null
-npm pack --dry-run --json > "$tmp_dir/pack.json"
+npm pack --json --pack-destination "$tmp_dir" > "$tmp_dir/pack.json"
 
 node --input-type=module - "$tmp_dir/pack.json" <<'NODE'
 import { readFileSync } from "node:fs";
@@ -36,5 +36,24 @@ if (missing.length > 0) {
   process.exit(1);
 }
 NODE
+
+package_file="$(node --input-type=module - "$tmp_dir/pack.json" <<'NODE'
+import { readFileSync } from "node:fs";
+import { join } from "node:path";
+
+const [pack] = JSON.parse(readFileSync(process.argv[2], "utf8"));
+console.log(join(process.argv[2], "..", pack.filename));
+NODE
+)"
+
+mkdir "$tmp_dir/consumer"
+cd "$tmp_dir/consumer"
+npm init -y >/dev/null
+npm install --ignore-scripts "$package_file" >/dev/null
+
+test "$(./node_modules/.bin/repoctx --version)" = "0.1.0"
+./node_modules/.bin/repoctx --help | grep -q 'Usage:'
+test -z "$(node --input-type=module -e \
+  'await import("./node_modules/repoctx/dist/cli.js")')"
 
 printf 'repoctx package smoke passed\n'
