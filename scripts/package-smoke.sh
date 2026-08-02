@@ -51,7 +51,8 @@ cd "$tmp_dir/consumer"
 npm init -y >/dev/null
 npm install --ignore-scripts "$package_file" >/dev/null
 
-test "$(./node_modules/.bin/repoctx --version)" = "0.1.0"
+package_version="$(node -p "require('$repo_root/package.json').version")"
+test "$(./node_modules/.bin/repoctx --version)" = "$package_version"
 ./node_modules/.bin/repoctx --help | grep -q 'Usage:'
 test -z "$(node --input-type=module -e \
   'await import("./node_modules/repoctx/dist/cli.js")')"

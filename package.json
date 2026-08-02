@@ -1,6 +1,6 @@
 {
   "name": "repoctx",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Repository context tooling for agentic development workflows.",
   "type": "module",
   "bin": {
@@ -35,7 +35,8 @@
     "test": "vitest run",
     "typecheck": "tsc --noEmit",
     "package:smoke": "bash scripts/package-smoke.sh",
-    "release:check": "npm run check && npm test && npm run build && npm run smoke && npm run package:smoke"
+    "release:metadata": "node scripts/check-release-metadata.mjs",
+    "release:check": "npm run check && npm test && npm run build && npm run smoke && npm run package:smoke && npm run release:metadata"
   },
   "keywords": [
     "repoctx",
