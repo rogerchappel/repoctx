@@ -7,6 +7,14 @@ format and uses semantic versioning when versioned releases are published.
 
 ## [Unreleased]
 
+## [0.2.0] - 2026-08-02
+
+### Fixed
+
+- Prevented npm releases from reusing an already-published package version.
+- Added a release-readiness check that keeps manifest, lockfile, changelog,
+  built CLI, and packed package versions aligned.
+
 ### Added
 
 - Initial repoctx PRD, roadmap, release-process documentation, workspace schema,
@@ -33,6 +41,8 @@ format and uses semantic versioning when versioned releases are published.
 ## Release Links
 
 - Unreleased:
-  `https://github.com/rogerchappel/repoctx/compare/v0.1.0...HEAD`
+  `https://github.com/rogerchappel/repoctx/compare/v0.2.0...HEAD`
+- 0.2.0:
+  `https://github.com/rogerchappel/repoctx/compare/v0.1.4...v0.2.0`
 - Latest release:
   `https://github.com/rogerchappel/repoctx/releases/latest`

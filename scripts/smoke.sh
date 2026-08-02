@@ -6,7 +6,8 @@ tmp_dir="$(mktemp -d "${TMPDIR:-/tmp}/repoctx-smoke.XXXXXX")"
 trap 'rm -rf "$tmp_dir"' EXIT
 
 node "$repo_root/dist/cli.js" --help | grep -q 'repoctx'
-test "$(node "$repo_root/dist/cli.js" --version)" = "0.1.0"
+package_version="$(node -p "require('$repo_root/package.json').version")"
+test "$(node "$repo_root/dist/cli.js" --version)" = "$package_version"
 
 node "$repo_root/dist/cli.js" init --output "$tmp_dir/workspace.yaml"
 test -s "$tmp_dir/workspace.yaml"
