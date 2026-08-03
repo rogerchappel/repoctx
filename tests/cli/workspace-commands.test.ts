@@ -191,6 +191,54 @@ describe("repoctx workspace commands", () => {
     expect(await readFile(join(context.cwd, "exports/workspace.yaml"), "utf8")).toContain("repoctx");
   });
 
+  it("uses standard YAML semantics across read and mutation commands", async () => {
+    const cwd = await mkdtemp(join(tmpdir(), "repoctx-cli-"));
+    tempDirs.push(cwd);
+    await writeFile(
+      join(cwd, "workspace.yaml"),
+      [
+        'version: "0.1" # schema version',
+        "repos:",
+        "  app:",
+        '    path: "." # inline comments are not scalar data',
+        "    type: product",
+        "    tags: [web, yaml] # flow collections are valid YAML",
+        "",
+      ].join("\n"),
+    );
+
+    const list = await runWithCwd(cwd, ["list", "--tag", "yaml"]);
+    expect(list.exitCode).toBe(0);
+    expect(list.stdout).toContain("app");
+
+    const inspect = await runWithCwd(cwd, ["inspect", "app"]);
+    expect(inspect.exitCode).toBe(0);
+    expect(inspect.stdout).toContain("Path: .");
+    expect(inspect.stdout).not.toContain("inline comments");
+
+    const validate = await runWithCwd(cwd, ["validate"]);
+    expect(validate.stdout).not.toContain("path does not exist");
+
+    const update = await runWithCwd(cwd, [
+      "update",
+      "app",
+      "--docs-url",
+      "https://example.com/docs",
+    ]);
+    expect(update.exitCode).toBe(0);
+    expect(await loadWorkspace(join(cwd, "workspace.yaml"))).toEqual({
+      version: "0.1",
+      repos: {
+        app: {
+          path: ".",
+          type: "product",
+          tags: ["web", "yaml"],
+          docs_url: "https://example.com/docs",
+        },
+      },
+    });
+  });
+
   it("returns non-zero for invalid mutation input", async () => {
     const context = await runInTemp(["init"]);
     tempDirs.push(context.cwd);
